@@ -67,6 +67,12 @@ def gameroom(img,displaytext,root):
     #root.mainloop()
 
 def waitEnter():
+    global user_entry
+    global canvas
+    user_entry.configure(state='disabled')
+    waitUntilButtonClicked()
+
+def waitUntilButtonClicked():
     global enter_btn
     global canvas
     var = tk.IntVar()
@@ -76,7 +82,10 @@ def waitEnter():
     print 'button clicked'
 
 def inputEnter():
-    waitEnter()
+    global user_entry
+    global canvas
+    user_entry.configure(state='normal')
+    waitUntilButtonClicked()
     entered_text = readEntry()
     return entered_text
 
