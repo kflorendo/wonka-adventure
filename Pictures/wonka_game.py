@@ -6,22 +6,24 @@ import os
 output_text = ''
 canvas = ''
 enter_btn = ''
+user_entry = ''
 #root.configure(background='black')
 
 class room1:
     def __init__(self, master):
         self.master = master
         self.frame = tk.Frame(self.master)
-        gameroom('inventroom.png','hi',self.frame)
         self.frame.pack()
+        gameroom('inventroom.png','hi',self.frame)
         waitEnter()
-        #display('hey')
-        #self.frame.pack()
+        display('hey')
+        print inputEnter()
 
 def gameroom(img,displaytext,root):
     global output_text
     global canvas
     global enter_btn
+    global user_entry
     screenwidth = 800
     screenheight = 800
     screenbg = 'black'
@@ -73,6 +75,17 @@ def waitEnter():
     enter_btn.wait_variable(var)
     print 'button clicked'
 
+def inputEnter():
+    waitEnter()
+    entered_text = readEntry()
+    return entered_text
+
+def readEntry():
+    global user_entry
+    user_entered = user_entry.get()
+    user_entry.delete(0,'end')
+    return user_entered
+
 def enter():
     print "hey"
 
@@ -81,7 +94,6 @@ def display(displaytext):
     global canvas
     canvas.itemconfig(output_text,text=displaytext)
     canvas.update()
-
 
 def main():
     root = tk.Tk()
