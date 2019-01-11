@@ -1,4 +1,8 @@
 bag = ["key"]
+
+cabinet_contents = ["secret formula", "deflation gumdrops"]
+
+candy_recipe_folder = ["fruity tooty lollipop recipe","groovy grape taffy recipe","twisty tangy twizzlers recipe"]
 room_solved = False
 char_is_dead = False
 
@@ -12,7 +16,10 @@ def get_r(accepted_r):
     return r
 
 def enter():
-    r = raw_input("Enter>>")
+    raw_input("Enter>>")
+
+def add_remove_item(item, add_loc, remove_loc):
+    
 
 display("Welcome to the Inventing Room! You are standing in the very place where some of Wonka's world-reknown, best-selling candy concoctions came to life!")
 enter()
@@ -29,7 +36,7 @@ enter()
 while (not room_solved):
     
     if char_is_dead:
-        display("You have died! Better luck next time!")
+        display("You have failed! Better luck next time!")
         enter()
         break
     
@@ -52,12 +59,13 @@ while (not room_solved):
                     display("It looks like the key you found can open the closet. Would you like to open it?\ny = yes\nn = no")
                     r = get_r(["y","n"])
                     if r == "y":
-                        if "secret formula" not in bag:
+                        if "secret formula" in cabinet_contents:
                             display("There is a small vile with a mysterious blue liquid. What would you like to do?\n1 = put in bag\n2 = drink the liquid\n3 = leave in closet")
                             r = get_r(["1","2","3"])
                             if r == "1":
                                 bag.append("secret formula")
-                                display("You have added <secret formula> to your bag.")
+                                cabinet_contents.remove("secret formula")
+                                display("You have added <SECRET FORMULA> to your bag.")
                                 enter()
                             if r == "2":
                                 display("The liquid is too strong on its own! Are you sure you would like to drink it?\ny = yes\nn = no")
@@ -67,15 +75,27 @@ while (not room_solved):
                                     char_is_dead = True
                                     enter()
                                     break
-                        if "deflation gumdrops" not in bag:
-                            display("You have found deflation gumdrops! Would you like to put them in your bag?\ny = yes\nn = no")
+                        if "deflation gumdrops" in cabinet_contents:
+                            display("You have found <DEFLATION GUMDROPS>! Would you like to put them in your bag?\ny = yes\nn = no")
                             r = get_r(["y","n"])
                             if r == "y":
                                 bag.append("deflation gumdrops")
-                                display("You have added <deflation gumdrops> to your bag.")
+                                cabinet_contents.remove("deflation gumdrops")
+                                display("You have added <DEFLATION GUMDROPS> to your bag.")
                                 enter()
+                        if len(cabinet_contents) == 0:
+                            display("The cabinet is empty.")
+                            enter()
             elif r == "2":
-                print "Recipe Cabinet"
+                display("This is the recipe cabinet. Add a recipe to your bag to view it. Which folder would you like to look in?\n1 = candy\n2 = chocolates\n3 = antidotes\n4 = none")
+                r = get_r(["1","2","3"])
+                if r == "1":
+                    if "fruity tooty lollipop" in candy_recipe_folder:
+                        display("Would you like to add the <FRUIT TOOTY LOLLIPOP RECIPE> to your bag?\ny = yes\nn = no")
+                        r = get_r(["y","n"])
+                        if r == "y":
+                            bag.append("fruity tooty lollipop recipe")
+                            candy_recipe_folder.remove("fruity tooty lollipop recipe")
             elif r == "3":
                 print "Cauldron"
             elif r == "4":
@@ -114,4 +134,12 @@ while (not room_solved):
                 display("Stock Pantry\nWhere you can find ingredients like berries and extracts.")
             elif r == "q":
                 view_loc_desc = False
+    
+    elif r == "4":
+        display("Your progress will not be saved and items you have picked up in this room will not remain in your bag. Would you like to continue?\ny = yes\nn = no")
+        r = get_r(["y","n"])
+        if r == "y":
+            display("You have left the room.")
+            enter()
+            break
 
