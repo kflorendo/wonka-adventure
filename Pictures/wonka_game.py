@@ -10,10 +10,18 @@ user_entry = ''
 #root.configure(background='black')
 
 class room1:
+    global output_text
+    global canvas
+    global enter_btn
+    global user_entry
     def __init__(self, master):
         self.master = master
         self.frame = tk.Frame(self.master)
         self.frame.pack()
+        output_text = ''
+        canvas = ''
+        enter_btn = ''
+        user_entry = ''
         gameroom('inventroom.png','hi',self.frame)
         waitEnter()
         display('hey')
@@ -66,11 +74,29 @@ def gameroom(img,displaytext,root):
     canvas.update()
     #root.mainloop()
 
-def waitEnter():
+def waitEnter():             #use to wait for Enter btn, no text input
     global user_entry
     global canvas
     user_entry.configure(state='disabled')
     waitUntilButtonClicked()
+
+def inputEnter():           #use to read text input
+    global user_entry
+    global canvas
+    user_entry.configure(state='normal')
+    user_entry.delete(0,'end')
+    user_entry.insert(0,'typehere')
+    canvas.update()
+    waitUntilButtonClicked()
+    entered_text = readEntry()
+    return entered_text
+
+def readEntry():
+    global user_entry
+    user_entered = user_entry.get()
+    user_entry.delete(0,'end')
+    canvas.update()
+    return user_entered
 
 def waitUntilButtonClicked():
     global enter_btn
@@ -80,20 +106,6 @@ def waitUntilButtonClicked():
     canvas.update()
     enter_btn.wait_variable(var)
     print 'button clicked'
-
-def inputEnter():
-    global user_entry
-    global canvas
-    user_entry.configure(state='normal')
-    waitUntilButtonClicked()
-    entered_text = readEntry()
-    return entered_text
-
-def readEntry():
-    global user_entry
-    user_entered = user_entry.get()
-    user_entry.delete(0,'end')
-    return user_entered
 
 def enter():
     print "hey"
