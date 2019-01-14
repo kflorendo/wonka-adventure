@@ -19,15 +19,30 @@ class WonkaApp:
         self.frame.pack()
         initializeGameRoom('inventroom.png','hi',self.frame)
         enter()
-        
-        #run room functions:
         runCandyShopRoom()
-
-#room functions:
 
 def runCandyShopRoom():
     displayTitle('Candy Shop')
     displayRoomImage('finalroom.png')
+    display('Hello Charlie! \n\n1 = \'Hello!\' \n\nType \'1\' below and click \'ENTER\' to proceed.')
+    get_r('1')
+    display('The eccentric chocolatier Willy Wonka, who retired last year, just announced that there would be one final mission in his chocolate factory. \n\nClick \'ENTER\' to proceed.')
+    enter()
+    display('The person who finds the remaining 5 golden tickets wins an grand, mysterious prize. It\'s on the news everywhere!')
+    enter()
+    display('In order to get in to the factory, you must find the first golden ticket hidden in a candy store. Do you agree? \n\n1 = \'Okay!\'')
+    get_r('1')
+    display('Rumor has it the last golden ticket is at the candy store on your street... Would you like to visit? \n\ny = yes \nn = no')
+    r = get_r('yn')
+    if r == 'n':
+        display('Your Grandpa Joe has been wanting to visit the candy store for a while. He forces you to go to the candy shop with him.')
+        enter()
+    elif r == 'y':
+        display('You go together to the candy shop with Grandpa Joe who has been wanting to visit the candy store for a while.')
+        enter()
+    display('Along the way, you find 50 cents in the snow. Do you want to pick it up?\n\ny = yes \nn = no')
+    r = get_r('yn')
+    if r = 'n':
 
 def initializeGameRoom(img,displaytext,root):
     global output_text
