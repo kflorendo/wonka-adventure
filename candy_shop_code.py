@@ -22,6 +22,7 @@ class WonkaApp:
         runCandyShopRoom()
 
 def runCandyShopRoom():
+    
     displayTitle('Candy Shop')
     displayRoomImage('finalroom.png')
     display('Hello Charlie! \n\n1 = \'Hello!\' \n\nType \'1\' below and click \'ENTER\' to proceed.')
@@ -101,7 +102,7 @@ def displayRoomImage(img):
     canvas.itemconfig(room_img,window=displayimg)
     canvas.update()
     
-def enter():             #use to wait for Enter btn, no text input
+def enter(tk.event):             #use to wait for Enter btn, no text input
     global user_entry
     global canvas
     user_entry.configure(state='disabled')
