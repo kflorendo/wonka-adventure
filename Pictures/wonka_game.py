@@ -255,6 +255,7 @@ def runCandyShopRoom():
                         backpack_items.append('Golden Ticket 1')
                         room_unsolved = False
                         enter()
+                        return 'solved'
                     else:
                         display('You ask Grandpa Joe for money, but he gets mad at you. There is no way he could spend that much money on a chocolate bar. You died. Return to start page.') #restart
                         enter()
@@ -273,6 +274,15 @@ def runCandyShopRoom():
         elif r == '3':
             display('Candy Register Guy: "I can\'t help you there, old sport. I\'ll be here whenever you\'re ready."')
             enter()
+
+def chocolateRoom():
+    hasLollipop = backpack_items.has('Luminous Lollipop')
+    if hasLollipop == True:
+
+    elif hasLollipop == False:
+        display('Oh no! The room is dark and you can\'t see anything. \n\nIt seems like you\'ll need something to light up the room...')
+        enter()
+        display('Maybe you can go visit a different room. Here\'s 0.50 cents to help you out!')
 
 def runInventingRoom():
     displayTitle('Inventing Room')
