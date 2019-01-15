@@ -12,7 +12,6 @@ title_text = ''
 error_text = ''
 entVar = ''
 root = ''
-#root.configure(background='black')
 
 class WonkaApp:
     def __init__(self, master):
@@ -32,15 +31,20 @@ class WonkaApp:
         global room_img
         global title_text
         global error_text
+
+        #change screen width/height/bg color
         screenwidth = 700
         screenheight = 900
         screenbg = 'black'
+
+        #initialize canvas
         canvas = Canvas(root, bg = screenbg, width = screenwidth, height = screenheight)
         canvas.pack()
-        #root = Tk()
-        #root.geometry('800x800+0+0')
+
+        #initialize title text box
         title_text = canvas.create_text((screenwidth/2,30), anchor = N, fill = 'white', font =('Courier',14),text='Room')
 
+        #open image
         imgpath = Image.open(os.path.dirname(os.path.abspath(__file__)) + '//' + img)
         resizedimg = imgpath.resize((500,500))
         screenroom_img = ImageTk.PhotoImage(resizedimg)
@@ -48,18 +52,25 @@ class WonkaApp:
         displayimg.image = screenroom_img
         room_img = canvas.create_window(screenwidth/2,75,window = displayimg, anchor = N)
 
+        #initialize text box to display words
         output_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',12),text=displaytext, width = 525)
+
+        #initialize text box to display error
         error_text = canvas.create_text((screenwidth/2,screenheight-100), anchor = N, fill = 'red', font =('Courier',12),text='')
 
+        #initialize entry box
         user_entry = Entry(canvas, relief = FLAT, bd = 10)
         user_entry.config(font=("Courier", 14))
         user_entry.pack()
         canvas.create_window(screenwidth/2-50,screenheight-25,window = user_entry, anchor = S)
 
+        #initialize enter button
         enter_btn = Button(canvas, text = "ENTER", font = ('Courier',14),command = retFunc)
         enter_btn.configure(bd = 5)
         enter_btn.pack()
         canvas.create_window(screenwidth/2+125,screenheight-25,window = enter_btn, anchor = S)
+
+        #bind return key to enter btn
         self.master.bind('<Return>',retFunc)
         canvas.update()
 
@@ -385,7 +396,7 @@ def enter():             #use to wait for Enter btn, no text input
     #enter_btn.focus_set()
     waitUntilButtonClicked()
 
-def get_r(accepted_r):
+def get_r(accepted_r):      #use to receive input in entry box, accepted responses as a list parameter
     user_r = inputEnter().lower()
     #enter_btn.focus_set()
     while (user_r == '' or (user_r not in accepted_r)):
@@ -394,6 +405,15 @@ def get_r(accepted_r):
         user_r = inputEnter()
     canvas.itemconfig(error_text,text='')
     return user_r
+
+def display(displaytext):
+    global output_text
+    global canvas
+    canvas.itemconfig(output_text,text=displaytext)
+    canvas.update()
+
+
+#helper functions:
 
 def inputEnter():           #use to read text input
     global user_entry
@@ -405,15 +425,6 @@ def inputEnter():           #use to read text input
     waitUntilButtonClicked()
     entered_text = readEntry()
     return entered_text
-
-def display(displaytext):
-    global output_text
-    global canvas
-    canvas.itemconfig(output_text,text=displaytext)
-    canvas.update()
-
-
-#helper functions:
 
 def readEntry():
     global user_entry
@@ -435,6 +446,8 @@ def retFunc(event=None):
     global canvas
     global entVar
     entVar.set(1)
+
+# run main code
 
 def main():
     global root

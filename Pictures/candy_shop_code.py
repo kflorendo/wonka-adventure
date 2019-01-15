@@ -22,7 +22,7 @@ class WonkaApp:
         self.initializeGameRoom('inventroom.png','hi',self.frame)
         enter()
         #run room functions:
-        runInventingRoom()
+        runCandyShopRoom()
 
     def initializeGameRoom(self,img,displaytext,root):
         global output_text
@@ -48,7 +48,7 @@ class WonkaApp:
         displayimg.image = screenroom_img
         room_img = canvas.create_window(screenwidth/2,75,window = displayimg, anchor = N)
 
-        output_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',12),text=displaytext, width = 525)
+        output_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
         error_text = canvas.create_text((screenwidth/2,screenheight-100), anchor = N, fill = 'red', font =('Courier',12),text='')
 
         user_entry = Entry(canvas, relief = FLAT, bd = 10)
@@ -80,7 +80,7 @@ def runCandyShopRoom():
     display('Rumor has it the last golden ticket is at the candy store on your street... Would you like to visit? \n\ny = yes \nn = no')
     r = get_r('yn')
     if r == 'n':
-        display('Your Grandpa Joe has been wanting to visit the candy store for a while. He forces you to go to the candy shop with him.')
+        display('Aw, man. Your Grandpa Joe has been wanting to visit the candy store for a while, so he forces you to go to the candy shop with him.')
         enter()
     else:
         display('You go together to the candy shop with Grandpa Joe who has been wanting to visit the candy store for a while.')
@@ -89,13 +89,18 @@ def runCandyShopRoom():
     r = get_r('yn')
     if r == 'y':
         money += .50
-        display('You have gained 50 cents! \nOpen your backpack to see your new money.')
+        display('You have gained 50 cents! Maybe you can get some more later. \n\nOpen your backpack to see your new money.')
         enter()
     else:
-        display('You have no money :(. Maybe Grandpa Joe can help you out later.')
+        display('You have no money now. But at least you\'ve got a good conscience. Maybe Grandpa Joe can help you out later.')
         enter()
     display('You\'ve reached the candy shop!')
     enter()
+    #NOTE: Change candy in the following line to items that we can actually use later on
+    display('Candy Register Guy: "Hi, Charlie! Nice to see you again. I see you\'re with your Grandpa Joe..." \nWhat would you like today, Charlie?" \n\n1 - "I\'ll have some candy."\n2 - "Can you turn on the news?"')
+    r = get_r('123')
+    
+
 
 def runInventingRoom():
     displayTitle('Inventing Room')
