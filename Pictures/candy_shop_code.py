@@ -11,15 +11,17 @@ room_img = ''
 title_text = ''
 error_text = ''
 entVar = ''
-root = ''
+backpack_btn = ''
+backpack_frame = ''
+backpack_text = ''
 #root.configure(background='black')
 
 class WonkaApp:
     def __init__(self, master):
         self.master = master
-        self.frame = tk.Frame(self.master)
-        self.frame.pack()
-        self.initializeGameRoom('inventroom.png','hi',self.frame)
+        mainframe = tk.Frame(self.master)
+        mainframe.pack()
+        self.initializeGameRoom('inventroom.png','hi',mainframe)
         enter()
         #run room functions:
         runCandyShopRoom()
@@ -32,6 +34,9 @@ class WonkaApp:
         global room_img
         global title_text
         global error_text
+        global backpack_btn
+        global backpack_frame
+        global backpack_text
         screenwidth = 700
         screenheight = 900
         screenbg = 'black'
@@ -61,12 +66,49 @@ class WonkaApp:
         enter_btn.pack()
         canvas.create_window(screenwidth/2+125,screenheight-25,window = enter_btn, anchor = S)
         self.master.bind('<Return>',retFunc)
+
+        backpack_frame = tk.Frame(self.master,width=500,height=150,bg="black")
+        backpack_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
+        backpack_text = Label(backpack_frame,bg="black",fg="white",text="test",font=("Courier",12))
+        backpack_text.pack()
+        backpack_frame.place(anchor = N,x=screenwidth/2, y=screenheight-300)
+
+        #backpack_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
+        backpack_btn = Button(canvas, text = "Open Backpack", font = ('Courier',12),command = displayBackpack)
+        backpack_btn.configure(bd = 5)
+        backpack_btn.pack()
+        canvas.create_window(screenwidth/2,screenheight-5,window = backpack_btn, anchor = S)
         canvas.update()
+        root.lift()
+
+def displayBackpack():
+    global backpack_items
+    global backpack_btn
+    global canvas
+    global backpack_frame
+    global backpack_text
+    displayBackpackString = 'Backpack:\n'
+    for item in backpack_items:
+        displayBackpackString += str(item) + '\n'
+    backpack_text.config(text = displayBackpackString)
+    backpack_frame.lift()
+    backpack_btn.configure(text = 'Close Backpack',command = closeBackpack)
+    canvas.update()
+
+def closeBackpack():
+    global backpack_btn
+    global canvas
+    global backpack_frame
+    backpack_frame.lower()
+    backpack_btn.configure(text = 'Open Backpack',command = displayBackpack)
+    canvas.update()
 
 #room functions:
+backpack_items = []
 
 def runCandyShopRoom():
-    money = 0
+    money = 0.0
+    room_unsolved = True
     displayTitle('Candy Shop')
     displayRoomImage('finalroom.png')
     display('Hello Charlie! \n\n1 = \'Hello!\' \n\nType \'1\' below and click \'ENTER\' to proceed.')
@@ -90,6 +132,8 @@ def runCandyShopRoom():
     if r == 'y':
         money += .50
         display('You have gained 50 cents! Maybe you can get some more later. \n\nOpen your backpack to see your new money.')
+        backpack_items.append('%.2f'%money)
+        moneyIndex = backpack_items.index('%.2f'%money)
         enter()
     else:
         display('You have no money now. But at least you\'ve got a good conscience. Maybe Grandpa Joe can help you out later.')
@@ -97,10 +141,138 @@ def runCandyShopRoom():
     display('You\'ve reached the candy shop!')
     enter()
     #NOTE: Change candy in the following line to items that we can actually use later on
-    display('Candy Register Guy: "Hi, Charlie! Nice to see you again. I see you\'re with your Grandpa Joe..." \nWhat would you like today, Charlie?" \n\n1 - "I\'ll have some candy."\n2 - "Can you turn on the news?"')
-    r = get_r('123')
-    
+    display('Candy Register Guy: "Hi, Charlie! Nice to see you again. I see you\'re with your Grandpa Joe..."')
+    enter()
 
+    while(room_unsolved):
+        display('"What would you like today, Charlie?" \n\n1 = "I\'ll have some candy."\n2 = "Can you turn on the TV?"\n3 = "I don\'t know."')
+        r = get_r('123')
+        if r == '1':
+            display(('Candy Register Guy: "What candy would you like?"\n\nYour balance: %.2f cents.\n\n1 = Laffy Taffy \t$0.10\n2 = SweeTarts \t$0.10\n3 = Old Lollipop \t$0.15\n4 = Gobstoppers \t$0.25')%money)
+            r = get_r('12345')
+            if r == '1':
+                if money < 0.10:
+                    display('You don\'t have enough money to buy the Laffy Taffy. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
+                    r = get_r('12')
+                    if r == '1':
+                        display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
+                        enter()
+                        return 'fail'
+                    elif r == '2':
+                        display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
+                        enter()
+                else:
+                    display('You bought the candy! It is put into your backpack.') #item in backpack
+                    money -= 0.10
+                    backpack_items.append('Laffy Taffy')
+                    if money > 0:
+                        backpack_items[moneyIndex] = ('%.2f'%money)
+                    else:
+                        backpack_items[moneyIndex] = '0.00'
+                    enter()
+            elif r == '2':
+                if money < 0.10:
+                    display('You don\'t have enough money to buy the SweeTarts. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
+                    r = get_r('12')
+                    if r == '1':
+                        display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
+                        enter()
+                        return 'fail'
+                    elif r == '2':
+                        display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
+                        enter()
+                else:
+                    display('You bought the candy! It is put into your backpack.') #item in backpack
+                    money -= 0.10
+                    backpack_items.append('SweeTarts')
+                    if money > 0:
+                        backpack_items[moneyIndex] = ('%.2f'%money)
+                    else:
+                        backpack_items[moneyIndex] = '0.00'
+                    enter()
+            elif r == '3':
+                if money < 0.15:
+                    display('You don\'t have enough money to buy the Lollipop. Candy Register Guy, being the kind man he is, offers it to you for free! Would you like to accept it? \n\ny = yes\nn = no')
+                    r = get_r('yn')
+                    if r == 'y':
+                        display('Wow! Turns out it isn\'t just a normal lollipop. It\'s a Luminous Lollipop! It is put into your backpack. \n\nWho knows, it might be useful in the future....')
+                        enter()
+                    elif r == 'n':
+                        display('Candy Register Guy: "Alright, Charlie. But you\'re missing out."')
+                        enter()
+                else:
+                    display('You bought the candy! \nWow! Turns out it isn\'t just a normal lollipop. It\'s a Luminous Lollipop! It is put into your backpack. \n\nWho knows, it might be useful in the future....')
+                    money -= 0.15
+                    backpack_items.append('Luminous Lollipop')
+                    if money > 0:
+                        backpack_items[moneyIndex] = ('%.2f'%money)
+                    else:
+                        backpack_items[moneyIndex] = '0.00'
+                    enter()
+            elif r == '4':
+                if money < 0.25:
+                    display('You don\'t have enough money to buy the SweeTarts. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
+                    r = get_r('12')
+                    if r == '1':
+                        display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
+                        enter()
+                    elif r == '2':
+                        display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
+                        enter()
+                else:
+                    display('You bought the candy! It is put into your backpack.') #item in backpack
+                    money -= 0.25
+                    backpack_items.append('Gobstoppers')
+                    if money > 0:
+                        backpack_items[moneyIndex] = ('%.2f'%money)
+                    else:
+                        backpack_items[moneyIndex] = '0.00'
+                    enter()
+        elif r == '2':
+            display('"Of course, Charlie! Here, I\'ll switch it on for you..."')
+            enter()
+            display('"Oh wait... what\'s that? Wonka\'s having another competition for golden tickets!"')
+            enter()
+            display('"That reminds me, I have one last Wonka Chocolate Bar." \nGrandpa Joe: "I remember Wonka! That man was a character." \n\n1 - Ask Grandpa Joe more about Wonka\n2 - Ask to see the chocolate bar')
+            r = get_r('12')
+            grandpasymp = False
+            if r == '1':
+                display('Grandpa Joe: "Oh, Charlie those were the most wonderful times. Wonka was such a polite soul with peculiar ideas for his chocolate factory. I enjoyed working there very much."')
+                enter()
+                display('Grandpa Joe seems to be getting pretty nostalgic...')
+                enter()
+                grandpasymp = True
+            display('Candy Register Guy: "So, would you like the last Wonka Bar? Maybe you\'ll get the last golden ticket! It\'s only $0.60."\n\ny = yes\nn = no')
+            r = get_r('yn')
+            if r == 'y':
+                display(('"Hmm... but you only have %.2f cents." \n\n1 - Ask Grandpa Joe to borrow money\n2 - Take the chocolate bar and run\n3 - Don\'t buy the chocolate bar') % money)
+                r = get_r('123')
+                if r == '1':
+                    if grandpasymp == True:
+                        display('Grandpa Joe: "Of course, Charlie! For old times sakes. Here, I\'ll pay for it."\n\nGrandpa Joe hands you the chocolate bar.')
+                        enter()
+                        display('You unwrap the chocolate bar and find the golden ticket! Congratulations! \n\nThe ticket has been added to your backpack.')
+                        backpack_items.append('Golden Ticket 1')
+                        room_unsolved = False
+                        enter()
+                    else:
+                        display('You ask Grandpa Joe for money, but he gets mad at you. There is no way he could spend that much money on a chocolate bar. You died. Return to start page.') #restart
+                        enter()
+                elif r == '2':
+                    display('You take it and run as fast as you can out the candy store door. Candy Register Guy calls the police and has you arrested.')
+                    enter()
+                    display('You died. Return to start page.') #restart
+                    enter()
+                    return 'fail'
+                elif r == '3':
+                    display('Candy Register Guy: "Alright, Charlie. Just know kids around the world want this chococlate bar!"') #return to asking
+                    enter()
+            elif r == 'n':
+                display('Candy Register Guy: "Alright, Charlie. Just know kids around the world want this chococlate bar!"') #return to asking
+                enter()
+        elif r == '3':
+            display('Candy Register Guy: "I can\'t help you there, old sport. I\'ll be here whenever you\'re ready."')
+            enter()
 
 def runInventingRoom():
     displayTitle('Inventing Room')
