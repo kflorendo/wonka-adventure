@@ -10,6 +10,8 @@ user_entry = ''
 room_img = ''
 title_text = ''
 error_text = ''
+entVar = ''
+root = ''
 #root.configure(background='black')
 
 class WonkaApp:
@@ -17,11 +19,49 @@ class WonkaApp:
         self.master = master
         self.frame = tk.Frame(self.master)
         self.frame.pack()
-        initializeGameRoom('inventroom.png','hi',self.frame)
+        self.initializeGameRoom('inventroom.png','hi',self.frame)
         enter()
-        
         #run room functions:
         runInventingRoom()
+
+    def initializeGameRoom(self,img,displaytext,root):
+        global output_text
+        global canvas
+        global enter_btn
+        global user_entry
+        global room_img
+        global title_text
+        global error_text
+        screenwidth = 700
+        screenheight = 900
+        screenbg = 'black'
+        canvas = Canvas(root, bg = screenbg, width = screenwidth, height = screenheight)
+        canvas.pack()
+        #root = Tk()
+        #root.geometry('800x800+0+0')
+        title_text = canvas.create_text((screenwidth/2,30), anchor = N, fill = 'white', font =('Courier',14),text='Room')
+
+        imgpath = Image.open(os.path.dirname(os.path.abspath(__file__)) + '//' + img)
+        resizedimg = imgpath.resize((500,500))
+        screenroom_img = ImageTk.PhotoImage(resizedimg)
+        displayimg = Label(image = screenroom_img)
+        displayimg.image = screenroom_img
+        room_img = canvas.create_window(screenwidth/2,75,window = displayimg, anchor = N)
+
+        output_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',12),text=displaytext, width = 525)
+        error_text = canvas.create_text((screenwidth/2,screenheight-100), anchor = N, fill = 'red', font =('Courier',12),text='')
+
+        user_entry = Entry(canvas, relief = FLAT, bd = 10)
+        user_entry.config(font=("Courier", 14))
+        user_entry.pack()
+        canvas.create_window(screenwidth/2-50,screenheight-25,window = user_entry, anchor = S)
+
+        enter_btn = Button(canvas, text = "ENTER", font = ('Courier',14),command = retFunc)
+        enter_btn.configure(bd = 5)
+        enter_btn.pack()
+        canvas.create_window(screenwidth/2+125,screenheight-25,window = enter_btn, anchor = S)
+        self.master.bind('<Return>',retFunc)
+        canvas.update()
 
 #room functions:
 
@@ -32,22 +72,22 @@ def runCandyShopRoom():
 def runInventingRoom():
     displayTitle('Inventing Room')
     displayRoomImage('inventroom.png')
-    
+
     bag = ["key", "blueberry extract", "fruity tooty lollipop", "purple taffy"]
 
     cabinet_contents = ["secret formula", "deflation gumdrops"]
-    
+
     candy_recipe_folder = ["fruity tooty lollipop recipe","groovy grape taffy recipe","twisty tangy twizzlers recipe"]
     chocolate_recipe_folder = ["golden ticket"]
     antidote_recipe_folder = ["blueberry antidote recipe piece 1"]
-    
+
     cauldron = []
     cauldron_attempts_left = 2
     antidote_ingredients_list = ["blueberry extract", "deflation gumdrops", "fruity tooty lollipop", "purple taffy", "secret formula"]
-    
+
     room_solved = False
     char_is_dead = False
-    
+
     display("Welcome to the Inventing Room! You are standing in the very place where some of Wonka's world-reknown, best-selling candy concoctions came to life!")
     enter()
     display("You stumbled upon a leftover piece of Three Course Dinner Chewing Gum from Violet Beauregarde's unfortunate mishap.")
@@ -58,26 +98,26 @@ def runInventingRoom():
     enter()
     display("Luckily, the Inventing Room is stocked with candy syrups, berries, and other ingredients. Have a look around and perhaps you'll find what you need to whip up an antidote! Good luck!")
     enter()
-    
-    
+
+
     while (not room_solved):
-        
+
         if char_is_dead:
             display("You have failed! Better luck next time!")
             enter()
             break
-        
+
         display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view bag\n4 = leave room")
         r = get_r(["1","2","3","4"])
-        
+
         #explore room
-        
+
         if r == "1":
             explore_room = True
             while(explore_room):
                 display("Where would you like to go?\n\n1 = closet\n2 = recipe cabinet\n3 = cauldron\n4 = candy making station\n5 = candy tasting table\n6 = syrup table\n7 = stock pantry\nq = quit")
                 r = get_r(["1","2","3","4","5","6","7","q"])
-                
+
                 #closet -----------------------------------------------------------
                 if r == "1":
                     if "key" not in bag:
@@ -114,15 +154,15 @@ def runInventingRoom():
                                     cabinet_contents.remove("deflation gumdrops")
                                     display("You have added <DEFLATION GUMDROPS> to your bag.")
                                     enter()
-                                    
+
                 #recipe cabinet ---------------------------------------------------
                 elif r == "2":
                     explore_cabinet = True
                     while(explore_cabinet):
-                        
+
                         display("This is the recipe cabinet. Add a recipe to your bag to view it. Which folder would you like to look in?\n\n1 = candy\n2 = chocolates\n3 = antidotes\nq = quit")
                         r = get_r(["1","2","3","q"])
-                        
+
                         #candy recipe folder
                         if r == "1":
                             if len(candy_recipe_folder) == 0:
@@ -152,8 +192,8 @@ def runInventingRoom():
                                     candy_recipe_folder.remove("twisty tangy twizzlers recipe")
                                     display("You have added <TWISTY TANGY TWIZZLERS RECIPE> to your bag.")
                                     enter()
-                            
-                        
+
+
                         #chocolate recipe folder
                         elif r == "2":
                             if len(chocolate_recipe_folder) == 0:
@@ -162,8 +202,8 @@ def runInventingRoom():
                             if "golden ticket" in chocolate_recipe_folder:
                                 display("You have found a <GOLDEN TICKET>! You have added the <GOLDEN TICKET>to your bag.")
                                 enter()
-                            
-                        
+
+
                         #antidote recipe folder
                         elif r == "3":
                             if len(antidote_recipe_folder) == 0:
@@ -177,18 +217,18 @@ def runInventingRoom():
                                     antidote_recipe_folder.remove("blueberry antidote recipe piece 1")
                                     display("You have added <BLUEBERRY ANTIDOTE RECIPE> to your bag. It appears that a piece of the paper has been ripped off...")
                                     enter()
-    
+
                         #exit cabinet
                         elif r == "q":
                             explore_cabinet = False
-                
+
                 #cauldron ---------------------------------------------------------
                 elif r == "3":
                     explore_cauldron = True
                     while(explore_cauldron):
                         display("What would you like to do?\n\n1 = add ingredient\n2 = view ingredients in cauldron\n3 = empty cauldron\n4 = start cooking\nq = quit")
                         r = get_r(["1","2","3","4","q"])
-                        
+
                         if r == "1":
                             if len(bag) > 0:
                                 display("Enter ingredient you would like to add. The ingredient must be in your bag or you will not be able to add it.")
@@ -224,16 +264,16 @@ def runInventingRoom():
                                 enter()
                         if r == "4":
                             can_cook = True
-                            
+
                             #check length
                             if len(cauldron) != 5:
                                 can_cook = False
-                            
+
                             #check ingredients
                             for ingredient in cauldron:
                                 if ingredient not in antidote_ingredients_list:
                                     can_cook = False
-                            
+
                             display("Are you sure you would like to cook the ingredients in the cauldron?\ny = yes\nn = no")
                             r = get_r(["y","n"])
                             if r == "y":
@@ -272,7 +312,7 @@ def runInventingRoom():
                     while(explore_pantry):
                         display("Which cabinet would you like to look in?\n1 = extracts\n2 = berries\nq = quit")
                         r = get_r(["1","2","q"])
-                        
+
                         #extract cabinet
                         if r == "1":
                             if "decipher spray" in bag:
@@ -283,14 +323,14 @@ def runInventingRoom():
                                 display("ATTENTION\nThis cabinet contains extract bottles. If they are not polished every 3 weeks, the labels may begin to fade.\nA decipher spray crafted with jolly ranchers can be used to spray bag.")
                 elif r == "q":
                     explore_room = False
-                
+
         #view location descriptions
         elif r == "2":
             view_loc_desc = True
             while(view_loc_desc):
                 display("What would you like to know more about?\n1 = closet\n2 = recipe cabinet\n3 = cauldron\n4 = candy making station\n5 = candy tasting table\n6 = syrup table\n7 = stock pantry\nq = quit")
                 r = get_r(["1","2","3","4","5","6","7","q"])
-                
+
                 if r == "1":
                     display("Cabinet\nHolds some secret stuff. Wonka usually keeps it locked for some reason...")
                     enter()
@@ -309,7 +349,7 @@ def runInventingRoom():
                     display("Stock Pantry\nWhere you can find ingredients like berries and extracts.")
                 elif r == "q":
                     view_loc_desc = False
-        
+
         elif r == "4":
             display("Your progress will not be saved and items you have picked up in this room will not remain in your bag. Would you like to continue?\ny = yes\nn = no")
             r = get_r(["y","n"])
@@ -317,44 +357,6 @@ def runInventingRoom():
                 display("You have left the room.")
                 enter()
                 break
-
-def initializeGameRoom(img,displaytext,root):
-    global output_text
-    global canvas
-    global enter_btn
-    global user_entry
-    global room_img
-    global title_text
-    global error_text
-    screenwidth = 700
-    screenheight = 900
-    screenbg = 'black'
-    canvas = Canvas(root, bg = screenbg, width = screenwidth, height = screenheight)
-    canvas.pack()
-    #root = Tk()
-    #root.geometry('800x800+0+0')
-    title_text = canvas.create_text((screenwidth/2,30), anchor = N, fill = 'white', font =('Courier',14),text='Room')    
-    
-    imgpath = Image.open(os.path.dirname(os.path.abspath(__file__)) + '//' + img)
-    resizedimg = imgpath.resize((500,500))
-    screenroom_img = ImageTk.PhotoImage(resizedimg)
-    displayimg = Label(image = screenroom_img)
-    displayimg.image = screenroom_img
-    room_img = canvas.create_window(screenwidth/2,75,window = displayimg, anchor = N)
-
-    output_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',12),text=displaytext, width = 525)
-    error_text = canvas.create_text((screenwidth/2,screenheight-100), anchor = N, fill = 'red', font =('Courier',12),text='')
-    
-    user_entry = Entry(canvas, relief = FLAT, bd = 10)
-    user_entry.config(font=("Courier", 14))
-    user_entry.pack()
-    canvas.create_window(screenwidth/2-50,screenheight-25,window = user_entry, anchor = S)
-
-    enter_btn = Button(canvas, text = "ENTER", font = ('Courier',14),command = buttonInitialize())
-    enter_btn.configure(bd = 5)
-    enter_btn.pack()
-    canvas.create_window(screenwidth/2+125,screenheight-25,window = enter_btn, anchor = S)
-    canvas.update()
 
 #functions for room:
 
@@ -374,22 +376,25 @@ def displayRoomImage(img):
     displayimg.image = screenroom_img
     canvas.itemconfig(room_img,window=displayimg)
     canvas.update()
-    
+
 def enter():             #use to wait for Enter btn, no text input
     global user_entry
     global canvas
+    global enter_btn
     user_entry.configure(state='disabled')
+    #enter_btn.focus_set()
     waitUntilButtonClicked()
 
 def get_r(accepted_r):
     user_r = inputEnter().lower()
+    #enter_btn.focus_set()
     while (user_r == '' or (user_r not in accepted_r)):
         canvas.itemconfig(error_text,text='Please enter valid input')
         canvas.update()
         user_r = inputEnter()
     canvas.itemconfig(error_text,text='')
     return user_r
-    
+
 def inputEnter():           #use to read text input
     global user_entry
     global canvas
@@ -420,16 +425,19 @@ def readEntry():
 def waitUntilButtonClicked():
     global enter_btn
     global canvas
-    var = tk.IntVar()
-    enter_btn.configure(command=lambda: var.set(1))
-    canvas.update()
-    enter_btn.wait_variable(var)
+    global entVar
+    global root
+    entVar = tk.IntVar()
+    enter_btn.wait_variable(entVar)
     print 'button clicked'
 
-def buttonInitialize():
-    print 'button initialized'
-    
+def retFunc(event=None):
+    global canvas
+    global entVar
+    entVar.set(1)
+
 def main():
+    global root
     root = tk.Tk()
     app = WonkaApp(root)
     root.mainloop()
