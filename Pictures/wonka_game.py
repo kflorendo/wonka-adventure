@@ -14,16 +14,23 @@ entVar = ''
 backpack_btn = ''
 backpack_frame = ''
 backpack_text = ''
+backpack_items = []
+masterRoot = ''
+money = 0
+chocolateFail = False
+
 #root.configure(background='black')
 
 class WonkaApp:
     def __init__(self, master):
-        self.master = master
-        mainframe = tk.Frame(self.master)
+        global masterRoot
+        masterRoot = master
+        mainframe = tk.Frame(masterRoot)
         mainframe.pack()
         self.initializeGameRoom('inventroom.png','hi',mainframe)
         enter()
         #run room functions:
+        #runCandyShopIntro()
         runCandyShopRoom()
 
     def initializeGameRoom(self,img,displaytext,root):
@@ -37,6 +44,7 @@ class WonkaApp:
         global backpack_btn
         global backpack_frame
         global backpack_text
+        global masterRoot
         screenwidth = 700
         screenheight = 900
         screenbg = 'black'
@@ -65,9 +73,9 @@ class WonkaApp:
         enter_btn.configure(bd = 5)
         enter_btn.pack()
         canvas.create_window(screenwidth/2+125,screenheight-25,window = enter_btn, anchor = S)
-        self.master.bind('<Return>',retFunc)
+        masterRoot.bind('<Return>',retFunc)
 
-        backpack_frame = tk.Frame(self.master,width=500,height=150,bg="black")
+        backpack_frame = tk.Frame(masterRoot,width=500,height=200,bg="black")
         backpack_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
         backpack_text = Label(backpack_frame,bg="black",fg="white",text="test",font=("Courier",12))
         backpack_text.pack()
@@ -87,11 +95,14 @@ def displayBackpack():
     global canvas
     global backpack_frame
     global backpack_text
+    global masterRoot
     displayBackpackString = 'Backpack:\n'
     for item in backpack_items:
         displayBackpackString += str(item) + '\n'
     backpack_text.config(text = displayBackpackString)
     backpack_frame.lift()
+    enter_btn.configure(state="disabled")
+    masterRoot.unbind('<Return>')
     backpack_btn.configure(text = 'Close Backpack',command = closeBackpack)
     canvas.update()
 
@@ -99,16 +110,17 @@ def closeBackpack():
     global backpack_btn
     global canvas
     global backpack_frame
+    global masterRoot
     backpack_frame.lower()
     backpack_btn.configure(text = 'Open Backpack',command = displayBackpack)
+    enter_btn.configure(state="normal")
+    masterRoot.bind('<Return>',retFunc)
     canvas.update()
 
 #room functions:
-backpack_items = []
 
-def runCandyShopRoom():
-    money = 0.0
-    room_unsolved = True
+def runCandyShopIntro():
+    global money
     displayTitle('Candy Shop')
     displayRoomImage('finalroom.png')
     display('Hello Charlie! \n\n1 = \'Hello!\' \n\nType \'1\' below and click \'ENTER\' to proceed.')
@@ -133,7 +145,6 @@ def runCandyShopRoom():
         money += .50
         display('You have gained 50 cents! Maybe you can get some more later. \n\nOpen your backpack to see your new money.')
         backpack_items.append('%.2f'%money)
-        moneyIndex = backpack_items.index('%.2f'%money)
         enter()
     else:
         display('You have no money now. But at least you\'ve got a good conscience. Maybe Grandpa Joe can help you out later.')
@@ -144,12 +155,15 @@ def runCandyShopRoom():
     display('Candy Register Guy: "Hi, Charlie! Nice to see you again. I see you\'re with your Grandpa Joe..."')
     enter()
 
+def runCandyShopRoom():
+    global money
+    room_unsolved = True
     while(room_unsolved):
         display('"What would you like today, Charlie?" \n\n1 = "I\'ll have some candy."\n2 = "Can you turn on the TV?"\n3 = "I don\'t know."')
         r = get_r('123')
         if r == '1':
-            display(('Candy Register Guy: "What candy would you like?"\n\nYour balance: %.2f cents.\n\n1 = Laffy Taffy \t$0.10\n2 = SweeTarts \t$0.10\n3 = Old Lollipop \t$0.15\n4 = Gobstoppers \t$0.25')%money)
-            r = get_r('12345')
+            display(('Candy Register Guy: "What candy would you like?"\n\nYour balance: %.2f cents.\n\n1 = Laffy Taffy \t$0.10\n2 = SweeTarts \t$0.10\n3 = Old Lollipop \t$0.15\n4 = Gobstoppers \t$0.25\nq = quit')%money)
+            r = get_r('12345q')
             if r == '1':
                 if money < 0.10:
                     display('You don\'t have enough money to buy the Laffy Taffy. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
@@ -166,9 +180,9 @@ def runCandyShopRoom():
                     money -= 0.10
                     backpack_items.append('Laffy Taffy')
                     if money > 0:
-                        backpack_items[moneyIndex] = ('%.2f'%money)
+                        backpack_items[0] = ('%.2f'%money)
                     else:
-                        backpack_items[moneyIndex] = '0.00'
+                        backpack_items[0] = '0.00'
                     enter()
             elif r == '2':
                 if money < 0.10:
@@ -186,9 +200,9 @@ def runCandyShopRoom():
                     money -= 0.10
                     backpack_items.append('SweeTarts')
                     if money > 0:
-                        backpack_items[moneyIndex] = ('%.2f'%money)
+                        backpack_items[0] = ('%.2f'%money)
                     else:
-                        backpack_items[moneyIndex] = '0.00'
+                        backpack_items[0] = '0.00'
                     enter()
             elif r == '3':
                 if money < 0.15:
@@ -205,9 +219,9 @@ def runCandyShopRoom():
                     money -= 0.15
                     backpack_items.append('Luminous Lollipop')
                     if money > 0:
-                        backpack_items[moneyIndex] = ('%.2f'%money)
+                        backpack_items[0] = ('%.2f'%money)
                     else:
-                        backpack_items[moneyIndex] = '0.00'
+                        backpack_items[0] = '0.00'
                     enter()
             elif r == '4':
                 if money < 0.25:
@@ -224,9 +238,9 @@ def runCandyShopRoom():
                     money -= 0.25
                     backpack_items.append('Gobstoppers')
                     if money > 0:
-                        backpack_items[moneyIndex] = ('%.2f'%money)
+                        backpack_items[0] = ('%.2f'%money)
                     else:
-                        backpack_items[moneyIndex] = '0.00'
+                        backpack_items[0] = '0.00'
                     enter()
         elif r == '2':
             display('"Of course, Charlie! Here, I\'ll switch it on for you..."')
@@ -259,6 +273,7 @@ def runCandyShopRoom():
                     else:
                         display('You ask Grandpa Joe for money, but he gets mad at you. There is no way he could spend that much money on a chocolate bar. You died. Return to start page.') #restart
                         enter()
+                        return 'fail'
                 elif r == '2':
                     display('You take it and run as fast as you can out the candy store door. Candy Register Guy calls the police and has you arrested.')
                     enter()
@@ -276,13 +291,38 @@ def runCandyShopRoom():
             enter()
 
 def chocolateRoom():
-    hasLollipop = backpack_items.has('Luminous Lollipop')
-    if hasLollipop == True:
-
-    elif hasLollipop == False:
+    if "Luminous Lollipop" in backpack_items:
+        health = 0
+        display('Oh no! The room is dark and you can\'t see anything. Fortunately, you have the <LUMINOUS LOLLIPOP> in your backpack! Use it to light up the room.\n\n1 = use lollipop\nq = return to home')
+        r = get_r('1q')
+        if r == '1':
+            displayRoomImage('chocolate.png')
+            display('Now you can finally see! Turns out everything in the room is edible. Yum!')
+            enter()
+            display('You realize you\'re starving and could eat any of the things in the room. But, you have to make sure to be secretive about taking the food!')
+            enter()
+            display('If you eat too much, the Ooompa Loompas will know and come after you. Be careful!')
+            enter()
+            display('What would you like to eat? \n\n1 = Candy Apples\n2 = Chocolate Bark\n3 = Gumdrop Pebbles\n4 = Cotton Candy Clouds\n5 = Chocolate from the Chocolate River\n6 = Sour Worms')
+            r = get_r('123456')
+            if r == '1':
+                health += 20
+                display('Yum!\n\nYour Health: ' + str(health))
+        elif r == 'q':
+            return 'fail'
+    elif ("Luminous Lollipop" not in backpack_items) and (chocolateFail == False):
         display('Oh no! The room is dark and you can\'t see anything. \n\nIt seems like you\'ll need something to light up the room...')
         enter()
-        display('Maybe you can go visit a different room. Here\'s 0.50 cents to help you out!')
+        display('Maybe you can go visit a different room and see if you can find anything. Here\'s 0.50 cents to help you out!\n\nItem added to backpack.')
+        money += 0.50
+        backpack_items[0] = ('%.2f'%money)
+        chocolateFail == True
+        enter()
+        return 'fail'
+    elif chocolateFail == True:
+        display('The room is still dark! You can\'t see anything unless you find something to light up the room. Maybe go back to where it all started...?')
+        enter()
+        return 'fail'
 
 def runInventingRoom():
     displayTitle('Inventing Room')
