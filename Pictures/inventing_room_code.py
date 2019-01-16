@@ -1,4 +1,5 @@
 def runInventRoom():
+    global bag
     cabinet_contents = ["secret formula", "deflation gumdrops"]
     
     candy_recipe_folder = ["fruity tooty lollipop recipe","groovy grape taffy recipe","twisty tangy twizzlers recipe"]
@@ -19,18 +20,6 @@ def runInventRoom():
     
     room_solved = False
     char_is_dead = False
-    
-    def display(text):
-        print text
-    
-    def get_r(accepted_r):
-        r = raw_input(">> ").lower()
-        while (r not in accepted_r):
-            r = raw_input(">> ")
-        return r
-    
-    def enter():
-        raw_input("Enter>>")
     
     def get_recipes_from_bag():
         recipes_list = []
