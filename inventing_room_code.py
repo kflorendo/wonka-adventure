@@ -1,4 +1,4 @@
-bag = ["key", "blueberry extract", "fruity tooty lollipop", "purple taffy"]
+bag = ["key", "fruity tooty lollipop recipe","groovy grape taffy recipe","twisty tangy twizzlers recipe", "blueberry antidote recipe piece 1", "blueberry antidote recipe piece 2", "blueberry antidote recipe piece 3"]
 
 cabinet_contents = ["secret formula", "deflation gumdrops"]
 
@@ -9,6 +9,9 @@ antidote_recipe_folder = ["blueberry antidote recipe piece 1"]
 cauldron = []
 cauldron_attempts_left = 2
 antidote_ingredients_list = ["blueberry extract", "deflation gumdrops", "fruity tooty lollipop", "purple taffy", "secret formula"]
+
+extract_cabinet = ["raspberry extract", "strawberry extract", "blueberry extract"]
+berries_cabinet = ["huckleberry", "cranberry", "strawberry", "stRaNGe bERrY"]
 
 room_solved = False
 char_is_dead = False
@@ -24,6 +27,13 @@ def get_r(accepted_r):
 
 def enter():
     raw_input("Enter>>")
+
+def get_recipes_from_bag():
+    recipes_list = []
+    for item in bag:
+        if "recipe" in item:
+            recipes_list.append(item)
+    return recipes_list
 
 display("Welcome to the Inventing Room! You are standing in the very place where some of Wonka's world-reknown, best-selling candy concoctions came to life!")
 enter()
@@ -44,7 +54,7 @@ while (not room_solved):
         enter()
         break
     
-    display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view bag\n4 = leave room")
+    display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view a recipe\n4 = leave room")
     r = get_r(["1","2","3","4"])
     
     #explore room
@@ -252,12 +262,102 @@ while (not room_solved):
                     
                     #extract cabinet
                     if r == "1":
-                        if "decipher spray" in bag:
-                            print "cool!"
-                        else:
-                            display("The words on the extract bottle labels appear to be faded. You look on the cabinet door and a note is posted:")
+                        if len(extract_cabinet) == 0:
+                            display("The extract cabinet is empty.")
                             enter()
-                            display("ATTENTION\nThis cabinet contains extract bottles. If they are not polished every 3 weeks, the labels may begin to fade.\nA decipher spray crafted with jolly ranchers can be used to spray bag.")
+                        else:
+                            extracts_in_cabinet = ""
+                            for extract in extract_cabinet:
+                                extracts_in_cabinet += extract + "\n"
+                                
+                            display("The following extracts are in the cabinet. Which would you like to look at?\n\n" + extracts_in_cabinet)
+                            r = get_r(extract_cabinet)
+
+                            if r == "raspberry extract":
+                                display("Would you like to add the <RASPBERRY EXTRACT> to your bag?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "y":
+                                    bag.append("raspberry extract")
+                                    extract_cabinet.remove("raspberry extract")
+                                    display("You have added <RASPBERRY EXTRACT> to your bag.")
+                                    enter()
+                            elif r == "strawberry extract":
+                                display("Would you like to add the <STRAWBERRY EXTRACT> to your bag?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "y":
+                                    bag.append("strawberry extract")
+                                    extract_cabinet.remove("strawberry extract")
+                                    display("You have added <STRAWBERRY EXTRACT> to your bag.")
+                                    enter()
+                            elif r == "blueberry extract":
+                                display("Would you like to add the <BLUEBERRY EXTRACT> to your bag?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "y":
+                                    bag.append("blueberry extract")
+                                    extract_cabinet.remove("blueberry extract")
+                                    display("You have added <BLUEBERRY EXTRACT> to your bag.")
+                                    enter()
+                                    display("Hmm... it looks like there is a piece of paper underneath the extract bottle. You pick it up and appears to be part of a recipe.")
+                                    enter()
+                                    bag.append("blueberry antidote recipe piece 2")
+                                    display("You have added <BLUEBERRY ANTIDOTE RECIPE PIECE 2> to your bag.")
+                                    enter()
+                        
+                    #berries cabinet
+                    elif r == "2":
+                        if len(berries_cabinet) == 0:
+                            display("The berries cabinet is empty.")
+                            enter()
+                        else:
+                            berries_in_cabinet = ""
+                            for berry in berries_cabinet:
+                                berries_in_cabinet += berry + "\n"
+                            
+                            display("The following berries are in the cabinet. Which would you like to look at?\n\n" + berries_in_cabinet)
+                            r = get_r(berries_cabinet)
+                            
+                            if r == "huckleberry":
+                                display("Would you like to add the <HUCKLEBERRY> to your bag?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "y":
+                                    bag.append("huckleberry")
+                                    berries_cabinet.remove("huckleberry")
+                                    display("You have added <HUCKLEBERRY> to your bag.")
+                                    enter()
+                            elif r == "cranberry":
+                                display("Would you like to add the <CRANBERRY> to your bag?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "y":
+                                    bag.append("cranberry")
+                                    berries_cabinet.remove("cranberry")
+                                    display("You have added <CRANBERRY> to your bag.")
+                                    enter()
+                            elif r == "strawberry":
+                                display("Would you like to add the <STRABERRY> to your bag?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "y":
+                                    bag.append("strawberry")
+                                    berries_cabinet.remove("strawberry")
+                                    display("You have added <STRAWBERRY> to your bag.")
+                                    enter()
+                            elif r == "stRaNGe bERrY":
+                                display("What would you like to do with the <stRaNGe bERrY>?\n\n1 = eat the berry\n2 = add it to your bag\n3 = nothing")
+                                r = get_r(["1","2","3"])
+                                if r == "1":
+                                    display("Uh oh! The berry is poisonous! You have lost a life!")
+                                    char_is_dead = True
+                                    enter()
+                                elif r == "2":
+                                    bag.append("stRaNGe bERrY")
+                                    berries_cabinet.remove("stRaNGe bERrY")
+                                    display("You have added <stRaNGe bERrY> to your bag.")
+                                    enter()
+                                    explore_pantry = False
+                                    explore_room = False
+                    
+                    elif r == "q":
+                        explore_pantry = False
+                        
             elif r == "q":
                 explore_room = False
             
@@ -287,6 +387,41 @@ while (not room_solved):
             elif r == "q":
                 view_loc_desc = False
     
+    #view recipes
+    elif r == "3":
+        recipes_list = get_recipes_from_bag()
+        if len(recipes_list) == 0:
+            display("You have no recipes in your bag. Add a recipe to view it.")
+            enter()
+        else:
+            view_recipes = True
+            recipes_list.append("q")
+            while(view_recipes):
+                display("Enter recipe you would like to view. The recipe must be in your bag or you will not be able to view it. Enter 'q' to quit")
+                r = get_r(recipes_list)
+                if r == "q":
+                    view_recipes = False
+                elif r == "fruity tooty lollipop recipe":
+                    display("To create a <FRUITY TOOTY LOLLIPOP>, you need 3 things:\n1) 1 strawberry\n2) 1 huckleberry\n3) 1 flask of orange candy syrup")
+                    enter()
+                elif r == "groovy grape taffy recipe":
+                    display("This appears to be an old recipe... The words are too faded to make out.")
+                    enter()
+                elif r == "twisty tangy twizzlers recipe":
+                    display("This appears to be an old recipe... The words are too faded to make out.")
+                    enter()
+                elif r == "blueberry antidote recipe piece 1":
+                    display("To create a <BLUEBERRY ANTIDOTE>, you need 5 things:\n1) blueberry extract\n2) secret formula\n3) deflation gumdrops\n\nthe rest of the recipe appears to be ripped off...")
+                    enter()
+                elif r == "blueberry antidote recipe piece 2":
+                    display("4) purple taffy\n\nhint: maybe mix taffy colors in the candy making station...?\n\nthe rest of the recipe appear to be ripped off...")
+                    enter()
+                elif r == "blueberry antidote recipe piece 3":
+                    display("5) fruity tooty lollipop\n\nCombine these ingredients in a cauldron, and your antidote is complete!")
+                    enter()
+       
+
+
     elif r == "4":
         display("Your progress will not be saved and items you have picked up in this room will not remain in your bag. Would you like to continue?\ny = yes\nn = no")
         r = get_r(["y","n"])
