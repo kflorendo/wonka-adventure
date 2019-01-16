@@ -1,8 +1,8 @@
 room_solved = False
-by_machine = False
+questions_done = False
 oompa_called = False
-machine_wires = False
-char_is_dead = False
+machine_wired = False
+run_machine = False
 bag = []
 
 def display(text):
@@ -23,10 +23,6 @@ display("You take a look around the room and observe many strange objects and ma
 enter()
 
 while not room_solved: 
-    if char_is_dead:
-        display("You have failed! Better luck next time!")
-        enter()
-        break
     
     display("What would you like to do?\n\n1 = explore room\n2 = leave room")
     r = get_r(["1","2"])
@@ -38,106 +34,147 @@ while not room_solved:
     
         #machinery in center
         if r == "1": 
-            by_machine = True
-            if "wires" not in bag:
-                display("As you approach the intimidating machine, you see a switch on its side.")
-                enter()
-                display("Curiosity courses through your mind as you get closer to the switch.")
-                enter()
-                display("You put your finger on the switch and hesitate, remembering the Mike Teavee incident.")
-                enter()
-                display("The curiosity gets the best of you. You close your eyes and flip the switch.")
-                enter()
-                display("...")
-                enter()
-                display("And you wait.")
-                enter()
-                display("Nothing happens.")
-                enter()
-                display("Suddenly, you notice that the wires attached to the back of the machine are frayed and broken. No wonder the machine didn't work!")
-                enter()
-                display("Somewhat relieved, you flip the switch back and decide to explore a different part of the room.")
-                enter()
-            elif "wires" in bag:
-                display("As you get approach the machine, you see broken wires attaching it to the ceiling.")
-                enter()
-                display("You get closer and also see a red switch on the side of the machine.")
-                enter()
-                while by_machine:
-                    display("What would you like to do?\n\n1 = get the Oompa Loompa to help you rewire machine\n2 = try to rewire machine yourself\n3 = leave and explore something else")
-                    r = get_r(["1","2","3"])
-                    if r == "1":
-                        if not oompa_called:
-                            display("You realize that the Oompa Loompa never told you his name.")
-                            enter()
-                            display("\"Uhh...\" you begin.")
-                            enter()
-                            display("\"Mister... Oompa Loompa man?\" you hesitantly call out. \"I need some help...\"")
-                            enter()
-                            display("There is no response.")
-                            enter()
-                            display("You try again. \"Sir Oompa Loompa? Dr. Loompa? Are you there??\"")
-                            enter()
-                            display("Still no reply.")
-                            enter()
-                            display("You are running out of names to call out. \"Little... orange man?\"")
-                            enter()
-                            display("\"WHAT DID YOU JUST CALL ME?\" a voice booms out.")
-                            enter()
-                            display("You blink and the Oompa Loompa appears. \"Hey there,\" you say. \"Thanks for coming.\"")
-                            enter()
-                            display("He looks at me for a second and then rolls his eyes. \"Yeah, whatever. What do you want? It better not be something stupid because I stopped eating my chocolate pudding for this...\"")
-                            enter()
-                            display("You hold out the wires from before. \"Do you think you can help me rewire the machine?\"")
-                            enter()
-                            display("He looks you in the eyes. \"Are you sure? That machine can be pretty dangerous...\"")
-                            enter()
-                            display("Are you sure you want to continue?\n\ny = yes\nn = no")
-                            r = get_r(["y","n"])
-                            if r == "n":
-                                oompa_called = True
-                                display("\"Maybe not,\" you say. \"It's probably too dangerous.\"")
+            if not machine_wired:
+                if "wires" not in bag:
+                    display("As you approach the intimidating machine, you see a switch on its side.")
+                    enter()
+                    display("Curiosity courses through your mind as you get closer to the switch.")
+                    enter()
+                    display("You put your finger on the switch and hesitate, remembering the Mike Teavee incident.")
+                    enter()
+                    display("The curiosity gets the best of you. You close your eyes and flip the switch.")
+                    enter()
+                    display("...")
+                    enter()
+                    display("And you wait.")
+                    enter()
+                    display("Nothing happens.")
+                    enter()
+                    display("Suddenly, you notice that the wires attached to the back of the machine are frayed and broken. No wonder the machine didn't work!")
+                    enter()
+                    display("Somewhat relieved, you flip the switch back and decide to explore a different part of the room.")
+                    enter()
+                elif "wires" in bag:
+                    display("As you get approach the machine, you see broken wires attaching it to the ceiling.")
+                    enter()
+                    display("You get closer and also see a red switch on the side of the machine.")
+                    enter()
+                    while not machine_wired:
+                        display("What would you like to do?\n\n1 = get the Oompa Loompa to help you rewire machine\n2 = try to rewire machine yourself\n3 = leave and explore something else")
+                        r = get_r(["1","2","3"])
+                        if r == "1":
+                            if not oompa_called:
+                                display("You realize that the Oompa Loompa never told you his name.")
                                 enter()
-                                display("The Oompa Loompa shrugs. \"Whatever,\" he says. \"Your choice. I'm going to go back to my pudding now.\"")
+                                display("\"Uhh...\" you begin.")
                                 enter()
-                                break
-                            display("\"Yeah, I'm sure,\" you say. \"Let's do it.\"")
+                                display("\"Mister... Oompa Loompa man?\" you hesitantly call out. \"I need some help...\"")
+                                enter()
+                                display("There is no response.")
+                                enter()
+                                display("You try again. \"Sir Oompa Loompa? Dr. Loompa? Are you there??\"")
+                                enter()
+                                display("Still no reply.")
+                                enter()
+                                display("You are running out of names to call out. \"Little... orange man?\"")
+                                enter()
+                                display("\"WHAT DID YOU JUST CALL ME?\" a voice booms out.")
+                                enter()
+                                display("You blink and the Oompa Loompa appears. \"Hey there,\" you say. \"Thanks for coming.\"")
+                                enter()
+                                display("He looks at me for a second and then rolls his eyes. \"Yeah, whatever. What do you want? It better not be something stupid because I stopped eating my chocolate pudding for this...\"")
+                                enter()
+                                display("You hold out the wires from before. \"Do you think you can help me rewire the machine?\"")
+                                enter()
+                                display("He looks you in the eyes. \"Are you sure? That machine can be pretty dangerous...\"")
+                                enter()
+                                display("Are you sure you want to continue?\n\ny = yes\nn = no")
+                                r = get_r(["y","n"])
+                                if r == "n":
+                                    oompa_called = True
+                                    display("\"Maybe not,\" you say. \"It's probably too dangerous.\"")
+                                    enter()
+                                    display("The Oompa Loompa shrugs. \"Whatever,\" he says. \"Your choice. I'm going to go back to my pudding now.\"")
+                                    enter()
+                                    break
+                                display("\"Yeah, I'm sure,\" you say. \"Let's do it.\"")
+                                enter()
+                                display("\"Alright,\" the Oompa Loompa shrugs. \"Your call. Hand over the wires and I'll take care of it. Just don't call me little orange man again.\"")
+                                enter()
+                                display("You hand over the wires and the Oompa Loompa gets to work. Soon enough, he finishes. \"All done,\" he calls out. \"Now I'm going to go back to that pudding. My lunch break is almost over, so don't bother me again.\"")
+                                enter()
+                                display("Machine successfully wired!")
+                                machine_wired = True
+                                display("Would you like to run the machine?\ny = yes\nn = no")
+                                r = get_r("y","n")
+                                if r == "y":
+                                    run_machine = True
+                            elif oompa_called:
+                                display("\"Hey, little orange man!\" you call out.")
+                                enter()
+                                display("The Oompa Loompa appears. \"You really have to quit calling me that, kid,\" he grumbles.")
+                                enter()
+                                display("\"I changed my mind,\" you declare. \"Can you help me wire the machine?\"")
+                                enter()
+                                display("The Oompa Loompa rolls his eyes. \"You better not be messing with me. I was in the middle of eating my chocolate sundae.\"")
+                                enter()
+                                display("\"I'm sure this time,\" you say. \"Here are the wires.\"")
+                                enter()
+                                display("\"Alright,\" he sighs. \"I'll do it. But don't be calling me again, ok? I want to eat my food.\"")
+                                enter()
+                                display("Finally, he gets to work, grumbling about how this was the worst lunch break he's ever had. You feel bad bothering him, but you really want to know more about the machine.")
+                                enter()
+                                while not questions_done:
+                                    display("What would you like to ask him?\n1 = \"What does the machine do?\"\n2 = \"How did the machine break?\"\nq = quit")
+                                    r = get_r(["1","2","q"])
+                                    if r == "1":
+                                        display("\"This is what Mr. Wonka likes to call the 'Minimizing Machine.'\"")
+                                        enter()
+                                        display("\"When you flip the red switch, it will shrink whatever you put in front of it and transports it to the TV over there.\"")
+                                        enter()
+                                        display("\"He wants to use it to send chocolate to the public through their TV sets. He calls it 'Television Chocolate'.\"")
+                                        enter()
+                                    elif r == "2":
+                                        display("\"One of the old Oompa Loompa workers, Jerry, tried to shrink the TV once. It ended up cracking the TV in half, and fried all of the wires on the machine.\"")
+                                        enter()
+                                        display("\"Needless to say, he was fired.\"")
+                                        enter()
+                                        display("\"We replaced the TV with one of our backups, but we didn't get the chance to replace the wires yet. So I guess it's good that you're making me do this now, even though it is supposed to be my break...\"")
+                                        enter()
+                                    elif r == "q":
+                                        questions_done = True
+                                display("Eventually, he finishes, nods at me and disappears, presumably back to his sundae.")
+                                enter()
+                                display("Machine successfully wired!")
+                                machine_wired = True
+                                display("Would you like to run the machine?\ny = yes\nn = no")
+                                r = get_r("y","n")
+                                if r == "y":
+                                    run_machine = True
+                        elif r == "2":
+                            print "wire yourself"
+                            display("You have failed! Better luck next time!")
                             enter()
-                            display("\"Alright,\" the Oompa Loompa shrugs. \"Your call. Hand over the wires and I'll take care of it. Just don't call me little orange man again.\"")
-                            enter()
-                            display("You hand over the wires and the Oompa Loompa gets to work. Soon enough, he finishes. \"All done,\" he calls out. \"Now I'm going to go back to that pudding. My lunch break is almost over, so don't bother me again.\"")
-                            enter()
-                            display("Machine successfully wired!")
-                            machine_wired = True
-                        elif oompa_called:
-                            display("\"Hey, little orange man!\" you call out.")
-                            enter()
-                            display("The Oompa Loompa appears. \"You really have to quit calling me that, kid,\" he grumbles.")
-                            enter()
-                            display("\"I changed my mind,\" you declare. \"Can you help me wire the machine?\"")
-                            enter()
-                            display("The Oompa Loompa rolls his eyes. \"You better not be messing with me. I was in the middle of eating my chocolate sundae.\"")
-                            enter()
-                            display("\"I'm sure this time,\" you say. \"Here are the wires.\"")
-                            enter()
-                            display("\"Alright,\" he sighs. \"I'll do it. But don't be calling me again, ok? I want to eat my food.\"")
-                            enter()
-                            display("Finally, he gets to work, grumbling about how this was the worst lunch break he's ever had. When he finishes, he nods at me and then disappears, presumably back to his sundae.")
-                            enter()
-                            display("Machine successfully wires!")
-                            machine_wired = True
-                    elif r == "2":
-                        print "wire yourself"
-                        char_is_dead = True
-                        break
-                        #you try to wire the machine yourself --> you start out confident but then you accidentally flip the switch and shrink yourself --> Oompa Loompa steps on char and he dead
-                    elif r == "3":
-                        display("You leave the machine.")
-                        by_machine = False
-                        break
+                            return "fail"
+                            #you try to wire the machine yourself --> you start out confident but then you accidentally flip the switch and shrink yourself --> Oompa Loompa steps on char and he dead
+                        elif r == "3":
+                            display("You leave the machine.")
+                            break
+            elif machine_wired and run_machine:
+                display("What would you like to shrink?\n1 = the chocolate bar\n2 = the TV\n3 = the Oompa Loompa")
+                r = get_r("1","2","3")
+                if r == "1":
+                    display("You position the chocolate bar to make sure it is under the shrink ray.")
+                    #FINISH
+                elif r == "2":
+                    print
+                    #FINISH
+                elif r == "3":
+                    print
+                    #FINISH
         #explore table
         elif r == "2":
-            if "wires" not in bag:
+            if "wires" not in bag and not machine_wired:
                 display("As you get closer to the table, you take a closer look at the wires.")
                 enter()
                 display("There are two wires on the table, one red and one blue.")
@@ -152,10 +189,10 @@ while not room_solved:
                     enter()
                     display("\"Hey!\" someone suddenly yells. \"What are you doing here?!\"")
                     enter()
-                    display("You whirl around from your bag, guiltily, and come face to face with an anry-looking Oompa Loompa")
+                    display("You whirl around from your bag and come face to face with an anry-looking Oompa Loompa")
                     enter()
-                    display("How do you want to respond? You don't think he saw you take the wires, but you are not sure.\n1 = yell back at him\n2 = apologize for taking wires\n3 = pretend that nothing is wrong\n4 = don't say anything")
-                    r = (["1","2","3","4"])
+                    display("How do you want to respond? You don't think he saw you take the wires, but you are not sure.\n1 = yell back at him\n2 = apologize for taking wires\n3 = lie to him")
+                    r = get_r(["1","2","3"])
                     if r == "1":
                         display("\"What do you think I'm doing?!\" you yell back defiantly. This was the last straw. Being stuck in this factory is messing with your mind.")
                         enter()
@@ -184,21 +221,19 @@ while not room_solved:
                         enter()
                         display("\"I really didn't know that I wasn't supposed to take the wires, and I am so so so sorry. If you need to arrest me, I understand,\" you say with a bowed head.")
                         enter()
-                        display("The Oompa Loompa stares at you for a second .")
-                        enter()
-                        display("Then, out of nowhere, he starts laughing.")
+                        display("The Oompa Loompa just stares at you. Then, out of nowhere, he starts laughing.")
                         enter()
                         display("It starts out with little giggles and ends with him bent over, howling and gasping for air.")
                         enter()
-                        display("You just stare at him, confused. Eventually he calms down.")
+                        display("You just stare at him, confused. Eventually, he calms down.")
                         enter()
                         display("\"You humans are so strange,\" he chuckles, turning back to you and wiping tears from his eyes.")
                         enter()
-                        display("You keep on staring at him. What just happened?")
+                        display("You keep on staring at him. What just happened?!")
                         enter()
                         display("\"Alright look, kid,\" he sighs. \"I didn't even see you take the wires, but I'm technically supposed to report you to the boss for stealing.")
                         enter()
-                        display("You look at him with fear in my eyes. You'll never be able to find the golden ticket if you're arrested.")
+                        display("You look at him with fear in my eyes. You'll never be able to find the last golden ticket if you're arrested.")
                         enter()
                         display("\"But,\" he continues, \"since you made me laugh, I'll let you slide this time.\"")
                         enter()
@@ -212,21 +247,31 @@ while not room_solved:
                         enter()
                         display("And then he disappears, leaving you standing in the middle of this strange room, unsure of what just happened.")
                     elif r == "3":
-                        display("\"Hello, sir,\" you say smoothly, subtly zipping up your incriminating backpack. \"I'm Charlie Bucket from the famous movies and books, and I was just passing through. Just like old times, you know?\"")
+                        display("\"Hello, sir,\" you say smoothly, subtly zipping up your incriminating backpack. \"I'm Charlie Bucket (the one from the famous movies and books), and I was just passing through. Just like old times, you know?\"")
                         enter()
-                        display("The Oompa Loompa looks at you skeptically. \"Just \'passing through\'?\" he asks.")
+                        display("The Oompa Loompa looks at you skeptically. \"Just 'passing through'?\" he asks.")
                         enter()
-                        display("You nod enthusiastically. \"I\'ll be on my way soon, though.")
+                        display("You nod enthusiastically. \"It's been a great trip down memory lane. I'll be on my way soon, though. It's getting late. \"")
                         enter()
-                        display("\"It's alright. I feel for you, kid,\" he nods. Just then, he looks over at the table with the missing wires. You see the flash of realization in his eyes as he looks over at your bag.")
+                        display("\"Alright...\" His beady eyes drill into me.")
+                        enter()
+                        display("Just then, he looks over at the table with the missing wires. You see the flash of realization in his eyes as he looks over at your bag. \"What happened to the wires over there?!\"")
                         enter()
                         display("You hold your breath as he makes eye contact with you.")
                         enter()
-                        char_is_dead = True
-                        #pretend that nothing is wrong --> Oompa Loompa can tell that you're lying and gets angry (looks in your bag and finds the wires) --> arrests you and game over
-                    elif r == "4":
-                        print "freeze up out of fear"
-                        #freeze up and cannot say anything --> Oompa Loompa feels bad and lets you slide
+                        display("He narrows his eyes. \"Give me your bag,\" he demands, holding out his hand. You hesitate at first, but reluctantly hand over the bag when you realize you don't have any choice.")
+                        enter()
+                        display("You look down at your feet as he pulls out the stolen wires from your bag. \"Come with me,\" he growls, grabbing your arm.")
+                        enter()
+                        display("\"Where are we going?\" you ask tentatively.")
+                        enter()
+                        display("\"Where we send all of the factory intruders and liars,\" he replies. \"All you need to know is that you won't see the outside world again for a very long time, if ever.\"")
+                        enter()
+                        display("\"Next time, think twice before lying. It'll always come back to bite you...\"")
+                        enter()
+                        display("You have failed! Better luck next time!")
+                        enter()
+                        return "fail"
                 elif r == "n":
                     display("Wires are left as they are.")
                     enter()
@@ -235,9 +280,11 @@ while not room_solved:
                 else:
                     display("You leave the table.")
                     enter()
-            elif "wires" in bag:
-                print "choices: 1. call for oompa loompa for help, 2. put wires back, 3. leave table"
-                #if oompa loompa called, tells more about room --> if shrink ray tested, explains more about uses --> ask him about shrinking tv (he doesn't know)
+            elif "wires" in bag or machine_wired:
+                display("There is nothing left at the table.")
+                enter()
+                display("You leave the table.")
+                enter()
         #explore tv set
         elif r == "3":
             display("You approach the old TV set in the corner of the room.")
@@ -245,17 +292,22 @@ while not room_solved:
             display("Do you want to turn it on?\n\ny = yes\nn = no\q = quit")
             r = get_r(["y","n","q"])
             if r == "y":
-                print "TV on and riddle shown"
-                #riddle gives clue that answer is within tv
-            if r == "n":
+                display("You find the power button on the old machine, and the TV sputters on.")
+                enter()
+                display("There is a strange message on the TV screen.\n\"The answer is always within.\"")
+                enter()
+                display("What could this mean?")
+                enter()
+            elif r == "n":
                 display("TV is left off.")
                 enter()
                 display("You leave the TV.")
                 enter()
-            if r == "q":
+            elif r == "q":
                 display("You leave the TV.")
                 enter()
     #leave room
     elif r == "2":
         print "Go to lobby"
+        break
         #go to lobby screen
