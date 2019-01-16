@@ -1,6 +1,7 @@
 room_solved = False
 by_machine = False
 oompa_called = False
+machine_wires = False
 char_is_dead = False
 bag = []
 
@@ -102,10 +103,12 @@ while not room_solved:
                                 break
                             display("\"Yeah, I'm sure,\" you say. \"Let's do it.\"")
                             enter()
-                            display("\"Alright,\" the Oompa Loompa shrugs. \"Your call. Hand over the wires and I'll take care of it.\"")
+                            display("\"Alright,\" the Oompa Loompa shrugs. \"Your call. Hand over the wires and I'll take care of it. Just don't call me little orange man again.\"")
                             enter()
                             display("You hand over the wires and the Oompa Loompa gets to work. Soon enough, he finishes. \"All done,\" he calls out. \"Now I'm going to go back to that pudding. My lunch break is almost over, so don't bother me again.\"")
                             enter()
+                            display("Machine successfully wired!")
+                            machine_wired = True
                         elif oompa_called:
                             display("\"Hey, little orange man!\" you call out.")
                             enter()
@@ -113,7 +116,16 @@ while not room_solved:
                             enter()
                             display("\"I changed my mind,\" you declare. \"Can you help me wire the machine?\"")
                             enter()
-                            #finish this!
+                            display("The Oompa Loompa rolls his eyes. \"You better not be messing with me. I was in the middle of eating my chocolate sundae.\"")
+                            enter()
+                            display("\"I'm sure this time,\" you say. \"Here are the wires.\"")
+                            enter()
+                            display("\"Alright,\" he sighs. \"I'll do it. But don't be calling me again, ok? I want to eat my food.\"")
+                            enter()
+                            display("Finally, he gets to work, grumbling about how this was the worst lunch break he's ever had. When he finishes, he nods at me and then disappears, presumably back to his sundae.")
+                            enter()
+                            display("Machine successfully wires!")
+                            machine_wired = True
                     elif r == "2":
                         print "wire yourself"
                         char_is_dead = True
@@ -153,7 +165,7 @@ while not room_solved:
                         enter()
                         display("The Oompa Loompa is silent for a second.")
                         enter()
-                        display("Eventually, he sighs. \"Look, buddy,\" he sighs. \"I don't want to yell at you as much as you don't want me to. I'm on my lunch break and the last thing I want to be doing is acting like security in the TV room.")
+                        display("Eventually, he sighs. \"Look, buddy,\" he sighs. \"I don't want to yell at you as much as you don't want me to. I'm on my lunch break and the last thing I want to be doing is be the security man of the TV Room.")
                         enter()
                         display("\"And I get why you're so frustrated,\" he continues. \"I've been stuck here my whole life. But you don't have to be so rude. Did you really have to call me a little orange man? That's low, man. Didn't your parents teach you some manners?\"")
                         enter()
@@ -165,7 +177,7 @@ while not room_solved:
                         enter()
                         display("\"I will,\" he calls, already walking out. \"If you need something, holler for me. But only in emergencies! I want to enjoy my lunch in peace...\"")
                         enter()
-                        display("And then he was gone. Your sigh of relief echoes in the silent room. You double check your bag to make sure the <Wires> are still there. They are. You are pretty sure the Oompa Loompa noticed they were missing, but let you slide. That was a close call.")
+                        display("And then he was gone. Your sigh of relief echoes in the silent room. You double check your bag to make sure the <Wires> are still there. They are. That was a close call.")
                         enter()
                     elif r == "2":
                         display("\"Sir, I am so so so sorry,\" you stammer. \"I'm just trying to find some way to get out of this factory so I can go back to my family, and I really don't want to cause any trouble.\"")
@@ -200,7 +212,16 @@ while not room_solved:
                         enter()
                         display("And then he disappears, leaving you standing in the middle of this strange room, unsure of what just happened.")
                     elif r == "3":
-                        print "lie to Oompa Loompa"
+                        display("\"Hello, sir,\" you say smoothly, subtly zipping up your incriminating backpack. \"I'm Charlie Bucket from the famous movies and books, and I was just passing through. Just like old times, you know?\"")
+                        enter()
+                        display("The Oompa Loompa looks at you skeptically. \"Just \'passing through\'?\" he asks.")
+                        enter()
+                        display("You nod enthusiastically. \"I\'ll be on my way soon, though.")
+                        enter()
+                        display("\"It's alright. I feel for you, kid,\" he nods. Just then, he looks over at the table with the missing wires. You see the flash of realization in his eyes as he looks over at your bag.")
+                        enter()
+                        display("You hold your breath as he makes eye contact with you.")
+                        enter()
                         char_is_dead = True
                         #pretend that nothing is wrong --> Oompa Loompa can tell that you're lying and gets angry (looks in your bag and finds the wires) --> arrests you and game over
                     elif r == "4":
