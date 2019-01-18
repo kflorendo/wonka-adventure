@@ -34,15 +34,15 @@ while not room_solved:
     
         #machinery in center
         if r == "1": 
-            if not machine_wired:
+            if not machine_wired and not run_machine:
                 if "wires" not in bag:
-                    display("As you approach the intimidating machine, you see a switch on its side.")
+                    display("As you approach the intimidating machine, you see a button on its side.")
                     enter()
-                    display("Curiosity courses through your mind as you get closer to the switch.")
+                    display("Curiosity courses through your mind as you get closer to the button.")
                     enter()
-                    display("You put your finger on the switch and hesitate, remembering the Mike Teavee incident.")
+                    display("You put your finger on the button and hesitate, remembering the Mike Teavee incident.")
                     enter()
-                    display("The curiosity gets the best of you. You close your eyes and flip the switch.")
+                    display("The curiosity gets the best of you. You close your eyes and press the b.utton")
                     enter()
                     display("...")
                     enter()
@@ -52,12 +52,12 @@ while not room_solved:
                     enter()
                     display("Suddenly, you notice that the wires attached to the back of the machine are frayed and broken. No wonder the machine didn't work!")
                     enter()
-                    display("Somewhat relieved, you flip the switch back and decide to explore a different part of the room.")
+                    display("Somewhat relieved, you decide to explore a different part of the room and leave the machine.")
                     enter()
                 elif "wires" in bag:
                     display("As you get approach the machine, you see broken wires attaching it to the ceiling.")
                     enter()
-                    display("You get closer and also see a red switch on the side of the machine.")
+                    display("You get closer and also see a red button on the side of the machine.")
                     enter()
                     while not machine_wired:
                         display("What would you like to do?\n\n1 = get the Oompa Loompa to help you rewire machine\n2 = try to rewire machine yourself\n3 = leave and explore something else")
@@ -130,9 +130,13 @@ while not room_solved:
                                     if r == "1":
                                         display("\"This is what Mr. Wonka likes to call the 'Minimizing Machine.'\"")
                                         enter()
-                                        display("\"When you flip the red switch, it will shrink whatever you put in front of it and transports it to the TV over there.\"")
+                                        display("\"When you press the red button, it will shrink whatever you put in front of it and transports it to the TV over there.\"")
                                         enter()
                                         display("\"He wants to use it to send chocolate to the public through their TV sets. He calls it 'Television Chocolate'.\"")
+                                        enter()
+                                        display("\"Is there a way to reverse the shrink way and make things bigger?\" you ask.")
+                                        enter()
+                                        display("\"Yes, actually,\" he replies. \"After the incident with Mike Teavee, we decided to put a button in the TV that can reverse the works of the shrink ray.\"")
                                         enter()
                                     elif r == "2":
                                         display("\"One of the old Oompa Loompa workers, Jerry, tried to shrink the TV once. It ended up cracking the TV in half, and fried all of the wires on the machine.\"")
@@ -152,26 +156,82 @@ while not room_solved:
                                 if r == "y":
                                     run_machine = True
                         elif r == "2":
-                            print "wire yourself"
+                            display("You don't want to bother the Oompa Loompa and his lunch again, so you decide to wire the machine yourself. It can't be THAT difficult.")
+                            enter()
+                            display("You get to work, and everything goes smoothly. The wires are the right size and it is pretty easy to figure out what goes where.")
+                            enter()
+                            display("Finally, you get to the last wire connection. You reach up to plug the wire into the socket in the ceiling with a feeling of satisfaction.")
+                            enter()
+                            display("Suddenly, you feel your foot slip from under you. You instinctually grab the wires to catch yourself. Unfortunately, you grab open part of the wire connected to the celing and die from electric shock.")
+                            enter()
                             display("You have failed! Better luck next time!")
                             enter()
                             return "fail"
-                            #you try to wire the machine yourself --> you start out confident but then you accidentally flip the switch and shrink yourself --> Oompa Loompa steps on char and he dead
                         elif r == "3":
                             display("You leave the machine.")
                             break
             elif machine_wired and run_machine:
-                display("What would you like to shrink?\n1 = the chocolate bar\n2 = the TV\n3 = the Oompa Loompa")
+                display("What would you like to shrink?\n1 = the chocolate bar\n2 = the TV\n3 = yourself\nq = quit")
                 r = get_r("1","2","3")
                 if r == "1":
                     display("You position the chocolate bar to make sure it is under the shrink ray.")
-                    #FINISH
+                    enter()
+                    display("You press the button and ZAP!")
+                    enter()
+                    display("There is a huge flash of white light, and the giant piece of chocolate disappears!")
+                    enter()
+                    display("You look over at the TV and see a smaller version of the chocolate bar in the screen.")
+                    enter()
+                    display("Hesitant, but hungry, you reach into the TV screen and pull out the chocolate bar.")
+                    enter()
+                    display("When you open it, there is a motivational quote on the inside of the wrapper.")
+                    enter()
+                    display("\"Don't be afraid to take a risk!\" it encourages you.")
+                    enter()
+                    display("'What a cute message!' you think to yourself as you take a bite of the chocolate.")
                 elif r == "2":
-                    print
-                    #FINISH
+                    display("Remembering the Oompa Loompa's story about Jerry, you decide to take a risk and try to recreate the incident. You are desperate and need to get out of this factory soon.")
+                    enter()
+                    display("You drag the TV over from the corner and set it on the pedestal in front of the machine. You go over to the button and press it.")
+                    enter()
+                    display("ZAP! There is a huge flash of white light and a big cracking noise. The ground begins shaking, and you fear that the ceiling will cave in on you.")
+                    enter()
+                    display("Eventually, everything calms down. The smell of fried metal fills the air. You look down at the TV, and sure enough, it is split in half. A thin trail of smoke sneaks up from it.")
+                    enter()
+                    display("You look around the rubble, trying to find something, but to no avail. Disappointed, you turn away. Where is that last golden ticket?")
+                    enter()
+                    display("Suddenly, a glint of something shiny catches your eye from behind the broken TV screen. Could it be...?")
+                    enter()
+                    display("You investigate closer, and sure enough, it is the golden ticket! The answer was \"within\" the TV all along...")
+                    enter()
+                    display("Congratulations. You found the golden ticket!")
+                    enter()
+                    return "solved"
                 elif r == "3":
-                    print
-                    #FINISH
+                    display("Out of curiosity, you decide to try to shrink yourself.")
+                    enter()
+                    display("Ever since the Mike Teavee incident, you had always wondered what it felt like to be shrunken. And anyways, the Oompa Loompa said that it was reversible.")
+                    enter()
+                    display("You step up on the platform and reach over and press the red button on the side of the machine.")
+                    enter()
+                    display("ZAP! You are surrounded by a white light and the most surreal feeling rushes over you. Your body feels like mist, and you can feel the particles in your body moving around. However, it is not painful.")
+                    enter()
+                    display("Eventually, you open your eyes and you find yourself looking out of the screen of what you assume is the TV. You are tiny!")
+                    enter()
+                    display("You look around at your surroundings and are amazed at their simplicity.")
+                    enter()
+                    display("Suddenly, you see something sparkle out of the corner of your eye,")
+                    enter()
+                    display("Fascinated, you turn your head and move a little closer. Is that what you think it is...")
+                    enter()
+                    display("You investigate closer, and sure enough, it is the golden ticket! The answer was \"within\" the TV all along...")
+                    enter()
+                    display("Congratulations. You found the golden ticket!")
+                    enter()
+                    return "solved"
+                elif r == "q":
+                    display("You leave the machine.")
+                    enter()
         #explore table
         elif r == "2":
             if "wires" not in bag and not machine_wired:
@@ -308,6 +368,5 @@ while not room_solved:
                 enter()
     #leave room
     elif r == "2":
-        print "Go to lobby"
-        break
         #go to lobby screen
+        break
