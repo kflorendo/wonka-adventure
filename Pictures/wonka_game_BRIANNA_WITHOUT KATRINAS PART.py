@@ -36,29 +36,28 @@ class WonkaApp:
         master.geometry("{0}x{1}+0+0".format(master.winfo_screenwidth()-pad, master.winfo_screenheight()-pad))
         master.bind('<Escape>',self.toggle_geom)
         self.master.configure(background="black")
+
         mainframe = tk.Frame(masterRoot,bg="black")
         mainframe.pack()
-        startLbl = Label(mainframe,bg="black",fg="white",text="Willy Wonka Game",font=("Courier",24))
+        #mainframe.place(anchor = 'n',x=(master.winfo_screenwidth()-pad)/2,y=500)
+        startLbl = Label(mainframe,bg="black",fg="white",text="Willy Wonka Game",font=("Courier",48))
         startLbl.pack()
+
         var = tk.IntVar()
         startBtn = Button(mainframe, text = "START GAME", font = ('Courier',14),command =lambda: var.set(1))
         startBtn.pack()
-        #startBtn.place(relx=500, rely=500, anchor="c")
+
         startBtn.wait_variable(var)
         startBtn.destroy()
         startLbl.destroy()
-        self.initializeGameRoom('inventroom.png','hi',mainframe)
-        enter()
-        displayRoomImage("tvroom.png")
+        self.initializeGameRoom('finalroom.png',' ',mainframe)
         #run room functions:
-        '''
-        runCandyShopIntro()
-        runCandyShopRoom()
+        runCandyShopRoomIntro()
         display('Oh no! Turns out Willy Wonka has trapped you inside his factory. You must succeed and get the golden ticket in each room to enter the final room.')
         enter()
         display('Maybe you\'ll see him in the final room....')
-        enter()'''
-        #runHomeScreen()
+        enter()
+        runHomeScreen()
 
     def toggle_geom(self,event):
         geom=self.master.winfo_geometry()
@@ -94,18 +93,9 @@ class WonkaApp:
         screenroom_img = ImageTk.PhotoImage(resizedimg)
         room_img = canvas.create_image((600,100),image = screenroom_img,anchor = 'n')
         canvas.update()
-        '''imgpath = Image.open(os.path.dirname(os.path.abspath(__file__)) + '//' + img)
-        resizedimg = imgpath.resize((500,500))
-        screenroom_img = ImageTk.PhotoImage(resizedimg)
-        displayimg = Label()
-        displayimg.pack()
-        displayimg.config(image = screenroom_img)
-        displayimg.image = screenroom_img
-        room_img = canvas.create_window(screenwidth/2,75,window = displayimg, anchor = N)
-        canvas.update()'''
 
         output_text = canvas.create_text((600,660), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
-        error_text = canvas.create_text((600,screenheight-100), anchor = N, fill = 'red', font =('Courier',12),text='')
+        error_text = canvas.create_text((600,screenheight-275), anchor = N, fill = 'red', font =('Courier',12),text='')
         canvas.create_line(1200,0,1200,1800, fill="white")
 
         user_entry = Entry(canvas, relief = FLAT, bd = 10)
@@ -165,6 +155,7 @@ def closeBackpack():
 
 def runHomeScreen():
     global candyShopSuccess
+    displayRoomImage('lobby_without_finalroom.png')
     gameRunning = True
     lives = 5
     while(gameRunning):
