@@ -1204,17 +1204,21 @@ def runSquirrelRoom():
             display('"Alright, so here\'s the deal. It\'s pretty much like the Tower of Hanoi if you\'ve heard of that puzzle."\n\ny = yes, I know that puzzle\nn = no, I need a refresher')
             r = get_r('yn')
             if r == 'y':
-                display('So it\'s the same deal here. You get three poles and you have to move the nuts onto the last pole in the order 1, 2, 3 without placing a larger nut (3>1) on a smaller nut.')
+                display('So it\'s the same deal here. You get three poles and you have to move the nuts onto the last pole in the order 1, 2, 3)')
                 enter()
+                display('Remember, you can\'t place a larger nut (3>2>1) on a smaller nut.'')
             elif r == 'n':
                 display('So basically, there are 3 poles. The 3 nuts start on one pole from smallest to biggest (1,2,3).')
                 enter()
-                display('Using all three poles, you get to move the nuts one at a time, without placing a larger nut (3>1) on a smaller nut, to get to get the nuts on the last pole in the order 1,2,3.')
+                display('Using all three poles, you get to move the nuts one at a time to get to get the nuts on the last pole in the order 1,2,3.')
+                enter()
+                display('You can\'t place a larger nut (3>2>1) on a smaller nut.')
                 enter()
             pole1 = ['1','2','3']
             pole2 = [' ',' ',' ']
             pole3 = [' ',' ',' ']
             unsolved = True
+            count = 0
             while(unsolved):
                 poleString = printPoles(pole1,pole2,pole3)
                 display(poleString + 'Which number nut would you like to move?')
@@ -1229,9 +1233,17 @@ def runSquirrelRoom():
                 elif polenum == '3':
                     editPoles(nutnum,oldpole,pole3)
                 unsolved = checkCorrect(pole3)
+                count+=1
+                if count%5 == 0:
+                    display('Would you like to quit? You\'ll lose a life.\n\nq = quit\nn = no, continue')
+                    r = get_r('qn')
+                    if r == 'q':
+                        return 'fail'
             display('Wow! Thanks for helping us move our nuts! As a gift, we\'ll give you a golden ticket!')
-            enter()
             backpack_items.append('Golden Ticket 4')
+            enter()
+            display('You will return to home.')
+            enter()
     elif r == 'n':
         display('You have left the room.')
         return
