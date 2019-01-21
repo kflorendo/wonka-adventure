@@ -370,5 +370,9 @@ while not room_solved:
                 enter()
     #leave room
     elif r == "2":
-        #go to lobby screen
-        break
+        display("Your progress will not be saved and items you have picked up in this room will not remain in your bag. Would you like to continue?\ny = yes\nn = no")
+        r = get_r(["y","n"])
+        if r == "y":
+            display("You have left the room.")
+            enter()
+            break
