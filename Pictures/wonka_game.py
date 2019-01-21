@@ -724,13 +724,6 @@ def runInventRoom():
     room_solved = False
     char_is_dead = False
     
-    def get_recipes_from_bag():
-        recipes_list = []
-        for item in bag:
-            if "recipe" in item:
-                recipes_list.append(item)
-        return recipes_list
-    
     display("Welcome to the Inventing Room! You are standing in the very place where some of Wonka's world-reknown, best-selling candy concoctions came to life!")
     enter()
     display("You stumbled upon a leftover piece of Three Course Dinner Chewing Gum from Violet Beauregarde's unfortunate mishap.")
@@ -745,7 +738,7 @@ def runInventRoom():
     
     while (not room_solved):
         
-        display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view a recipe\n4 = give up")
+        display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view a recipe\n4 = remove an item\n5 = give up")
         r = get_r(["1","2","3","4"])
         
         #explore room
@@ -998,6 +991,11 @@ def runInventRoom():
                                     print bag
                                     display("You created <PURPLE TAFFY>! it has been added to your bag.")
                                     enter()
+                                    display("Hmm... it looks like there is a piece of paper stuck under the machine. It looks like part of a recipe.")
+                                    enter()
+                                    bag.append("blueberry antidote recipe piece 3")
+                                    display("You have added <BLUEBERRY ANTIDOTE RECIPE PIECE 3> to your bag.")
+                                    enter()
                                 else:
                                     display("You do not have the right ingredients.")
                                     enter()
@@ -1077,11 +1075,6 @@ def runInventRoom():
                             bag.append("orange syrup")
                             available_syrup.remove("orange syrup")
                             display("You have added <ORANGE SYRUP> to your bag.")
-                            enter()
-                            display("Hmm... it looks like there is a piece of paper underneath the extract bottle. It looks like part of a recipe.")
-                            enter()
-                            bag.append("blueberry antidote recipe piece 3")
-                            display("You have added <BLUEBERRY ANTIDOTE RECIPE PIECE 3> to your bag.")
                             enter()
                     elif r == "banana syrup":
                         display("Looks like the Oompa Loompas need to restock the banana syrup.")
@@ -1256,12 +1249,45 @@ def runInventRoom():
                         enter()
         
         elif r == "4":
-            display("Your progress will not be saved and items you have picked up in this room will not remain in your bag. Would you like to continue?\ny = yes\nn = no")
+            removable_items = get_removable_items()
+            if len(bag) == 0:
+                display("You have no items in your bag.")
+                enter()
+            else:
+                remove_items = True
+                removable_items.append("q")
+                while(remove_items):
+                    display("Enter the item you would like to remove. The item must be in your bag or you will not be able to remove it. Enter 'q' to quit.")
+                    r = get_r(removable_items)
+                    if r == "q":
+                        remove_items = False
+                    else:
+                        bag.remove(r)
+                        display("You have removed <" + r.upper() + "> from your bag.")
+                        enter()
+        
+        elif r == "5":
+            display("Your progress will not be saved. Would you like to continue?\ny = yes\nn = no")
             r = get_r(["y","n"])
             if r == "y":
                 display("You have left the room.")
                 enter()
                 return
+
+#Invent room helper functions
+def get_recipes_from_bag():
+    recipes_list = []
+    for item in bag:
+        if "recipe" in item:
+            recipes_list.append(item)
+    return recipes_list
+
+def get_removable_items():
+    removable_items = []
+    for item in bag:
+        if "Golden Ticket" not in item:
+            removable_items.append(item)
+    return removable_items
 
 #Squirrel room function
 def runSquirrelRoom():
