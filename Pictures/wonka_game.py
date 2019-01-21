@@ -832,7 +832,7 @@ def runInventRoom():
                                 enter()
                             if "golden ticket" in chocolate_recipe_folder:
                                 bag.append("Golden Ticket 3")
-                                display("You have found a <GOLDEN TICKET>! You have added the <GOLDEN TICKET>to your bag.")
+                                display("You have found a <GOLDEN TICKET>! You have added the <GOLDEN TICKET> to your bag.")
                                 enter()
                             
                         
@@ -915,7 +915,10 @@ def runInventRoom():
                                     explore_cauldron = False
                                     explore_room = False
                                     room_solved = True
-                                    return "success"
+                                    if "Golden Ticket 3" in bag:
+                                        return "success"
+                                    else:
+                                        return
                                 else:
                                     cauldron_attempts_left -= 1
                                     if cauldron_attempts_left > 0:
