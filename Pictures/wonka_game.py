@@ -701,6 +701,8 @@ def runChocolateRoom():
 #Invent room function
 def runInventRoom():
     global bag
+    displayTitle('Inventing Room')
+    displayRoomImage('inventroom.png')
     cabinet_contents = ["secret formula", "deflation gumdrops"]
     
     candy_recipe_folder = ["fruity tooty lollipop recipe","groovy grape taffy recipe","twisty tangy twizzlers recipe"]
