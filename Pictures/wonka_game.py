@@ -1335,7 +1335,7 @@ def runSquirrelRoom():
             if r == 'y':
                 display('So it\'s the same deal here. You get three poles and you have to move the nuts onto the last pole in the order 1, 2, 3)')
                 enter()
-                display('Remember, you can\'t place a larger nut (3>2>1) on a smaller nut.'')
+                display('Remember, you can\'t place a larger nut (3>2>1) on a smaller nut.')
             elif r == 'n':
                 display('So basically, there are 3 poles. The 3 nuts start on one pole from smallest to biggest (1,2,3).')
                 enter()
