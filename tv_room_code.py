@@ -166,7 +166,7 @@ while not room_solved:
                             enter()
                             display("You have failed! Better luck next time!")
                             enter()
-                            return "fail"
+                            return "failed"
                         elif r == "3":
                             display("You leave the machine.")
                             break
@@ -205,8 +205,9 @@ while not room_solved:
                     display("You investigate closer, and sure enough, it is the golden ticket! The answer was \"within\" the TV all along...")
                     enter()
                     display("Congratulations. You found the golden ticket!")
+                    bag.append("golden ticket")
                     enter()
-                    return "solved"
+                    return "success"
                 elif r == "3":
                     display("Out of curiosity, you decide to try to shrink yourself.")
                     enter()
@@ -227,8 +228,9 @@ while not room_solved:
                     display("You investigate closer, and sure enough, it is the golden ticket! The answer was \"within\" the TV all along...")
                     enter()
                     display("Congratulations. You found the golden ticket!")
+                    bag.append("golden ticket")
                     enter()
-                    return "solved"
+                    return "success"
                 elif r == "q":
                     display("You leave the machine.")
                     enter()
@@ -331,7 +333,7 @@ while not room_solved:
                         enter()
                         display("You have failed! Better luck next time!")
                         enter()
-                        return "fail"
+                        return "failed"
                 elif r == "n":
                     display("Wires are left as they are.")
                     enter()
