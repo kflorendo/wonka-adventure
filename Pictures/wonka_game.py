@@ -2,6 +2,7 @@ import Tkinter as tk     # python 2
 from Tkinter import *
 from PIL import ImageTk,Image
 import os
+import random
 
 output_text = ''
 canvas = ''
@@ -52,12 +53,13 @@ class WonkaApp:
         startLbl.destroy()
         self.initializeGameRoom('finalroom.png',' ',mainframe)
         #run room functions:
-        runCandyShopRoomIntro()
-        display('Oh no! Turns out Willy Wonka has trapped you inside his factory. You must succeed and get the golden ticket in each room to enter the final room.')
-        enter()
-        display('Maybe you\'ll see him in the final room....')
-        enter()
-        runHomeScreen()
+        #runCandyShopRoomIntro()
+        #display('Oh no! Turns out Willy Wonka has trapped you inside his factory. You must succeed and get the golden ticket in each room to enter the final room.')
+        #enter()
+        #display('Maybe you\'ll see him in the final room....')
+        #enter()
+        #runHomeScreen()
+        runSquirrelRoom()
 
     def toggle_geom(self,event):
         geom=self.master.winfo_geometry()
@@ -181,6 +183,8 @@ def runHomeScreen():
                     lives-=1
                     display('You lost a life. You have '+ str(lives) + ' remaining.')
                     enter()
+                elif roomSuccess == 'success':
+                    chocolateRoomSuccess == True
         if lives <= 0:
             display('You died! Thanks for playing :)')
             gameRunning = False
@@ -212,7 +216,7 @@ def runCandyShopRoomIntro():
     if r == 'y':
         money += .50
         display('You have gained 50 cents! Maybe you can get some more later. \n\nOpen your backpack to see your new money.')
-        backpack_items.append('%.2f'%money)
+        backpack_items[0]=('%.2f'%money)
         enter()
     else:
         display('You have no money now. But at least you\'ve got a good conscience. Maybe Grandpa Joe can help you out later.')
@@ -360,6 +364,8 @@ def runCandyShopRoom():
     global money
     global candyShopSuccess
     room_unsolved = True
+    displayTitle('Candy Shop Room')
+    displayRoomImage('black.png') #candyshop
     while(room_unsolved):
         display('"What would you like today, Charlie?" \n\n1 = "I\'ll have some candy."\n2 = "Can you turn on the TV?"\n3 = "I don\'t know."\nq = return to home screen')
         r = get_r('123q')
@@ -464,6 +470,8 @@ def runChocolateRoom():
     global chocolateFail
     goldenTicketFound = False
     room_unsolved = True
+    displayTitle('Chocolate Room')
+    displayRoomImage('black.png')
     if "Luminous Lollipop" in backpack_items:
         health = 0
         display('Oh no! The room is dark and you can\'t see anything. Fortunately, you have the <LUMINOUS LOLLIPOP> in your backpack! Use it to light up the room.\n\n1 = use lollipop\nq = return to home')
@@ -1125,6 +1133,178 @@ def runInventRoom():
                 enter()
                 break
 
+def runSquirrelRoom():
+    global backpack_items
+    displayTitle('Squirrel Room')
+    displayRoomImage('squirrelroom.png')
+    display('Welcome to the Squirrel Room! You are standing in the middle of a garbage chute where dozens of squirrels are rumaging around.')
+    enter()
+    display('One squirrel comes up to you and asks, "Can you help us lift our nuts onto the other pole?"')
+    enter()
+    display('Well that\'s pretty easy isn\'t it? you think to yourself. Would you like to help?\n\ny = yes\nn = no')
+    r = get_r('yn')
+    if r == 'y':
+        display('Squirrel: "Yay! Let\'s get down to business. None of us squirrels could figure it out."')
+        enter()
+        display('Squirrel: "We\'re also kind of hungry though, so if you can\'t complete it in time, we\'ll probably have to eat you instead."')
+        enter()
+        display('Squirrel: "If you want to take the easy way out, let\'s just play a game of rock paper scissors. If you win, we\'ll give you a prize. If I win, we get to eat you."\n\n1 = rock paper scissors\n2 = help them move their nuts')
+        r = get_r('12')
+        if r == '1':
+            display('Squirrel: "Sounds good to me. Ready..."')
+            enter()
+            tie = True
+            while(tie):
+                display('Squirrel: "Rock... paper... scissors..."\n\nr = rock\np = paper\ns = scissors')
+                r = get_r('rps')
+                squir = random.choice('rps')
+                if r == 'r' and squir == 'p':
+                    display('...shoot!\nYes! I had paper! Fellas, it\'s time for lunch.')
+                    enter()
+                    display('The squirrels eat you.')
+                    enter()
+                    return 'fail'
+                elif r == 'r' and squir == 's':
+                    display('...shoot!\nAw man, I had scissors. You got me. Here\'s the golden ticket you wanted.')
+                    enter()
+                    display('Congratulations! The golden ticket has been added to your backpack.')
+                    backpack_items.append('Golden Ticket 4')
+                    enter()
+                    return 'success'
+                elif r == 's' and squir == 'p':
+                    display('...shoot!\nAw man, I had paper. You got me. Here\'s the golden ticket you wanted.')
+                    enter()
+                    display('Congratulations! The golden ticket has been added to your backpack.')
+                    backpack_items.append('Golden Ticket 4')
+                    enter()
+                    return 'success'
+                elif r == 's' and squir == 'r':
+                    display('...shoot!\nYes! I had rock! Fellas, it\'s time for lunch.')
+                    enter()
+                    display('The squirrels eat you.')
+                    enter()
+                    return 'fail'
+                elif r == 'p' and squir == 'r':
+                    display('...shoot!\nAw man, I had rock. You got me. Here\'s the golden ticket you wanted.')
+                    enter()
+                    display('Congratulations! The golden ticket has been added to your backpack.')
+                    backpack_items.append('Golden Ticket 4')
+                    enter()
+                    return 'success'
+                elif r == 'p' and squir == 's':
+                    display('...shoot!\nYes! I had scissors! Fellas, it\'s time for lunch.')
+                    enter()
+                    display('The squirrels eat you.')
+                    enter()
+                    return 'fail'
+                elif r == squir:
+                    display('We tied. Let\'s go again')
+                    enter()
+        elif r == '2':
+            display('"Alright, so here\'s the deal. It\'s pretty much like the Tower of Hanoi if you\'ve heard of that puzzle."\n\ny = yes, I know that puzzle\nn = no, I need a refresher')
+            r = get_r('yn')
+            if r == 'y':
+                display('So it\'s the same deal here. You get three poles and you have to move the nuts onto the last pole in the order 1, 2, 3 without placing a larger nut (3>1) on a smaller nut.')
+                enter()
+            elif r == 'n':
+                display('So basically, there are 3 poles. The 3 nuts start on one pole from smallest to biggest (1,2,3).')
+                enter()
+                display('Using all three poles, you get to move the nuts one at a time, without placing a larger nut (3>1) on a smaller nut, to get to get the nuts on the last pole in the order 1,2,3.')
+                enter()
+            pole1 = ['1','2','3']
+            pole2 = [' ',' ',' ']
+            pole3 = [' ',' ',' ']
+            unsolved = True
+            while(unsolved):
+                poleString = printPoles(pole1,pole2,pole3)
+                display(poleString + 'Which number nut would you like to move?')
+                nutnum = get_r(isFirstPole(pole1,pole2,pole3))
+                display(poleString + 'Which pole would you like to move it to?')
+                polenum = get_r(isPoleOk(nutnum, pole1,pole2,pole3))
+                oldpole = findOldPole(nutnum,pole1,pole2,pole3)
+                if polenum == '1':
+                    editPoles(nutnum,oldpole,pole1)
+                elif polenum == '2':
+                    editPoles(nutnum,oldpole,pole2)
+                elif polenum == '3':
+                    editPoles(nutnum,oldpole,pole3)
+                unsolved = checkCorrect(pole3)
+            display('Wow! Thanks for helping us move our nuts! As a gift, we\'ll give you a golden ticket!')
+            enter()
+            backpack_items.append('Golden Ticket 4')
+    elif r == 'n':
+        display('You have left the room.')
+        return
+
+def checkCorrect(pole):
+    if pole == ['1','2','3']:
+        return False
+    return True
+
+def findOldPole(num,pole1,pole2,pole3):
+    if num in pole1:
+        return pole1
+    elif num in pole2:
+        return pole2
+    elif num in pole3:
+        return pole3
+
+def firstNumIndex(pole):
+    for num in pole:
+        if num != ' ':
+            print num
+            return num
+    return ' '
+
+def isPoleOk(num,pole1, pole2, pole3):
+    editable = ''
+    poleArray = [' ',pole1, pole2, pole3]
+    for i in range(1,4):
+        firstNum = firstNumIndex(poleArray[i])
+        if firstNum == ' ':
+            editable += str(i)
+        elif int(firstNum)>int(num):
+            editable += str(i)
+    print editable
+    return editable
+
+def editPoles(num,oldpole,newpole):
+    editIndex = oldpole.index(num)
+    oldpole[editIndex] = ' '
+    for i in range(2,-1,-1):
+        if newpole[i] == ' ':
+            newpole[i] = num
+            print 'yes'
+            return newpole
+    newpole[0] = num
+    return newpole
+
+def printPoles(pole1,pole2,pole3):
+    displayString = ''
+    displayString += 'pole1:   '
+    for num in pole1:
+        displayString += '  ' + num + '  '
+    displayString += '\npole2:   '
+    for num in pole2:
+        displayString += '  ' + num + '  '
+    displayString += '\npole3:   '
+    for num in pole3:
+        displayString += '  ' + num + '  '
+    displayString += '\n'
+    return displayString
+
+def isFirstPole(pole1,pole2,pole3):
+    validInput = []
+    for pole in [pole1,pole2,pole3]:
+        if pole[0] != ' ':
+            validInput.append(pole[0])
+        else:
+            if pole[1] != ' ':
+                validInput.append(pole[1])
+            else:
+                if pole[2] != ' ':
+                    validInput.append(pole[2])
+    return validInput
 #functions for room:
 
 def displayTitle(roomname):
