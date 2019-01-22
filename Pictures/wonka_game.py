@@ -773,7 +773,7 @@ def runChocolateRoom():
 
     hasLollipop = useFlashlight(bag)
     #if lollipop is present, light up room
-    if (hasLollipop)
+    if (hasLollipop):
         health = 0
         display('Oh no! The room is dark and you can\'t see anything. Fortunately, you have the <LUMINOUS LOLLIPOP> in your backpack! Use it to light up the room.\n\n1 = use lollipop\nq = return to home')
         r = get_r('1q')
@@ -1048,6 +1048,7 @@ def runInventRoom():
                         display("What would you like to do?\n\n1 = add ingredient\n2 = view ingredients in cauldron\n3 = empty cauldron\n4 = start cooking\nq = quit")
                         r = get_r(["1","2","3","4","q"])
 
+                        #add ingredients
                         if r == "1":
                             if len(bag) > 0:
                                 display("Enter ingredient you would like to add. The ingredient must be in your bag or you will not be able to add it.")
@@ -1059,6 +1060,7 @@ def runInventRoom():
                             else:
                                 display("Your bag is empty. You cannot add any ingredients.")
                                 enter()
+                        #view ingredients
                         if r == "2":
                             if len(cauldron) > 0:
                                 display_string = ""
@@ -1071,6 +1073,7 @@ def runInventRoom():
                             else:
                                 display("The cauldron is empty.")
                                 enter()
+                        #remove ingredients
                         if r == "3":
                             if len(cauldron) > 0:
                                 for ingredient in cauldron:
@@ -1081,6 +1084,7 @@ def runInventRoom():
                             else:
                                 display("The cauldron is empty.")
                                 enter()
+                        #cook cauldron contents
                         if r == "4":
                             can_cook = True
 
@@ -1107,6 +1111,7 @@ def runInventRoom():
                                     else:
                                         return
                                 else:
+                                    #warning if wrong recipe 1st time
                                     cauldron_attempts_left -= 1
                                     if cauldron_attempts_left > 0:
                                         display("Oops! The cauldron exploded! One more explosion and you may lose a life!")
@@ -1116,6 +1121,7 @@ def runInventRoom():
                                             bag.append(ingredient)
                                         display("Don't worry though... if you added ingredients, they were returned to your bag.")
                                         enter()
+                                    #lose 1 life if wrong recipe 2nd time
                                     else:
                                         display("The cauldron exploded for the second time! You have lost a life!")
                                         char_is_dead = True
@@ -1133,9 +1139,11 @@ def runInventRoom():
                         display("What candy would you like to make?\n\n1 = deflation gumdrops\n2 = fruity tooty lollipop\n3 = colored taffy\nq = quit")
                         r = get_r(["1","2","3","q"])
 
+                        #deflation gumdrops
                         if r == "1":
                             display("This machine can no longer make deflation gumdrops! Maybe there are some lying around...")
                             enter()
+                        #fruity tooty lollipop
                         elif r == "2":
                             can_cook = True
 
@@ -1162,6 +1170,7 @@ def runInventRoom():
                             else:
                                 display("You do not have the ingredients to make this candy.")
                                 enter()
+                        #taffy
                         elif r == "3":
                             display("What color taffy would you like to make?\n\n1 = orange taffy\n2 = green taffy\n3 = purple taffy")
                             r = get_r(["1","2","3"])
@@ -1203,6 +1212,7 @@ def runInventRoom():
                         if r == "1":
                             display("Looks like someone ate all the jolly ranchers already. Oops.")
                             enter()
+                        #taffy
                         elif r == "2":
                             if len(available_taffy) == 0:
                                 display("There is no taffy left.")
@@ -1240,6 +1250,7 @@ def runInventRoom():
                                         display("You have added <BLUE TAFFY> to your bag.")
                                         enter()
 
+                        #gumdrops
                         elif r == "3":
                             display("These gumdrops have been sitting here for a few months. You probably don't wanna touch 'em.")
                             enter()
@@ -1465,6 +1476,8 @@ def runInventRoom():
                 return
 
 #Invent room helper functions
+
+#returns list of all recipe in user's bag
 def get_recipes_from_bag():
     recipes_list = []
     for item in bag:
@@ -1472,6 +1485,7 @@ def get_recipes_from_bag():
             recipes_list.append(item)
     return recipes_list
 
+#returns list of all removable items in bag (excludes golden tickets)
 def get_removable_items():
     removable_items = []
     for item in bag:
@@ -1610,6 +1624,7 @@ def checkCorrect(pole):
         return False
     return True
 
+#returns previous location of nut
 def findOldPole(num,pole1,pole2,pole3):
     if num in pole1:
         return pole1
@@ -1618,6 +1633,7 @@ def findOldPole(num,pole1,pole2,pole3):
     elif num in pole3:
         return pole3
 
+#returns the top nut on each pole
 def firstNumIndex(pole):
     for num in pole:
         if num != ' ':
@@ -1625,6 +1641,7 @@ def firstNumIndex(pole):
             return num
     return ' '
 
+#determine if nut can be placed on pole
 def isPoleOk(num,pole1, pole2, pole3):
     editable = ''
     poleArray = [' ',pole1, pole2, pole3]
@@ -1637,6 +1654,7 @@ def isPoleOk(num,pole1, pole2, pole3):
     print editable
     return editable
 
+#change nut order list for newpole
 def editPoles(num,oldpole,newpole):
     editIndex = oldpole.index(num)
     oldpole[editIndex] = ' '
@@ -1648,6 +1666,7 @@ def editPoles(num,oldpole,newpole):
     newpole[0] = num
     return newpole
 
+#return formatted string of nuts on pole
 def printPoles(pole1,pole2,pole3):
     displayString = ''
     displayString += 'pole1:   '
@@ -1662,6 +1681,7 @@ def printPoles(pole1,pole2,pole3):
     displayString += '\n'
     return displayString
 
+#determines list of possible nut inputs (top nut on each pole)
 def isFirstPole(pole1,pole2,pole3):
     validInput = []
     for pole in [pole1,pole2,pole3]:
