@@ -116,11 +116,8 @@ class WonkaApp:
         screenroom_img = ImageTk.PhotoImage(resizedimg)
         room_img = canvas.create_image((600,100),image = screenroom_img,anchor = 'n')
         canvas.update()
-<<<<<<< HEAD
-=======
 
         #create output text on canvas
->>>>>>> ea5dbd56eda9ebe3176ba2077fd5112bd3f3686f
         output_text = canvas.create_text((600,660), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
         #create error text on canvas for when input is wrong
         error_text = canvas.create_text((600,screenheight-275), anchor = N, fill = 'red', font =('Courier',12),text='')
@@ -613,6 +610,7 @@ def runCandyShopRoomIntro():
             display('Candy Register Guy: "I can\'t help you there, old sport. I\'ll be here whenever you\'re ready."')
             enter()
 
+#candy shop room function----------------------------------------------------------------------------------------------------------------------------------------
 def runCandyShopRoom():
     global money
     global candyShopSuccess
@@ -637,15 +635,14 @@ def runCandyShopRoom():
                     r = get_r('12')
                     #steal candy -> die
                     if r == '1':
-                        display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
-                        enter()
+                        stealCandy()
                         return 'fail'
                     elif r == '2':
                         display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
                         enter()
                 else:
                     display('You bought the candy! It is put into your backpack.') #item in backpack
-                    money -= 0.10
+                    money = delMoney(money,0.10)
                     bag.append('Laffy Taffy')
                     if money > 0:
                         bag[0] = ('%.2f'%money)
@@ -661,15 +658,14 @@ def runCandyShopRoom():
 
                     #steal candy -> die
                     if r == '1':
-                        display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
-                        enter()
+                        stealCandy()
                         return 'fail'
                     elif r == '2':
                         display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
                         enter()
                 else:
                     display('You bought the candy! It is put into your backpack.') #item in backpack
-                    money -= 0.10
+                    money = delMoney(money,0.10)
                     bag.append('SweeTarts')
                     if money > 0:
                         bag[0] = ('%.2f'%money)
@@ -698,7 +694,7 @@ def runCandyShopRoom():
                 #if lollipop bought, win room
                 else:
                     display('You bought the candy! \nWow! Turns out it isn\'t just a normal lollipop. It\'s a Luminous Lollipop! It is put into your backpack. \n\nWho knows, it might be useful in the future....')
-                    money -= 0.15
+                    money = delMoney(money,0.15)
                     bag.append('Luminous Lollipop')
                     if money > 0:
                         bag[0] = ('%.2f'%money)
@@ -717,14 +713,14 @@ def runCandyShopRoom():
 
                     #steal candy -> fail
                     if r == '1':
-                        display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
-                        enter()
+                        stealCandy()
+                        return 'fail'
                     elif r == '2':
                         display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
                         enter()
                 else:
                     display('You bought the candy! It is put into your backpack.') #item in backpack
-                    money -= 0.25
+                    money = delMoney(money,0.25)
                     bag.append('Gobstoppers')
                     if money > 0:
                         bag[0] = ('%.2f'%money)
@@ -750,19 +746,37 @@ def runCandyShopRoom():
         elif r == 'q':
             return
 
+#helper functions for Candy shop--------------------------------------------------------
+
+#calculate money after candy bought
+def delMoney(money,price):
+    return (money - price)
+
+#try to steal candy
+def stealCandy():
+    display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
+    enter()
+
+
+#chocolate room function------------------------------------------------------------------------------------------------------------
 def runChocolateRoom():
     global money
     global chocolateFail
+    global bag
     goldenTicketFound = False
     room_unsolved = True
+    #display black room
     displayTitle('Chocolate Room')
-    displayRoomImage('chocolateroom2.png')
-    if "Luminous Lollipop" in bag:
+    displayRoomImage('black.png')
+
+    hasLollipop = useFlashlight(bag)
+    #if lollipop is present, light up room
+    if (hasLollipop)
         health = 0
         display('Oh no! The room is dark and you can\'t see anything. Fortunately, you have the <LUMINOUS LOLLIPOP> in your backpack! Use it to light up the room.\n\n1 = use lollipop\nq = return to home')
         r = get_r('1q')
         if r == '1':
-            displayRoomImage('chocolate.png')
+            displayRoomImage('chocolateroom2.png')
             display('Now you can finally see! Turns out everything in the room is edible. Yum!')
             enter()
             display('You realize you\'re starving and could eat any of the things in the room. But, you have to make sure to be secretive about taking the food!')
@@ -770,23 +784,24 @@ def runChocolateRoom():
             display('If you eat too much, the Ooompa Loompas will know and come after you. Be careful!')
             enter()
 
+            #try to get health to 100
             while (room_unsolved):
                 display('Your Health: ' + str(health) + '\\100\nWhat would you like to eat? \n\n1 = Candy Apples\n2 = Chocolate Bark\n3 = Gumdrop Pebbles\n4 = Cotton Candy Clouds\n5 = Chocolate from the Chocolate River\n6 = Candy Shroom\n7 = Golden Leaf\nq = return to home')
                 r = get_r('1234567q')
                 if r == '1':
-                    health += 60
+                    health = eat(health,60)
                     display('Yum! That candy apple was delicious! \n+60 to your health.\n\nYour Health: ' + str(health) + '\\100')
                     enter()
                 elif r == '2':
-                    health += 30
+                    health = eat(health,30)
                     display('Mmmm... the chocolate bark was really satisfying. \n+30 to your health. \n\nYour Health: ' + str(health) + '\\100')
                     enter()
                 elif r == '3':
-                    health += 70
+                    health = eat(health,70)
                     display('Delicious! Those gumdrop pebbles taste really realistic... \n+70 to your health. \n\nYour Health: ' + str(health) + '\\100')
                     enter()
                 elif r == '4':
-                    health += 15
+                    health = eat(health,15)
                     display('That was a cloud of deliciousness! \n+15 to your health. \n\nYour Health: ' + str(health) + '\\100')
                     enter()
                 elif r == '5':
@@ -840,8 +855,8 @@ def runChocolateRoom():
                         bag.remove('Golden Ticket 2')
                     return 'fail'
         elif r == 'q':
-            return 'fail'
-    elif ("Luminous Lollipop" not in bag) and (chocolateFail == False):
+            return
+    elif (hasLollipop == False) and (chocolateFail == False):
         display('Oh no! The room is dark and you can\'t see anything. \n\nIt seems like you\'ll need something to light up the room...')
         enter()
         display('Maybe you can go visit a different room and see if you can find anything. Here\'s 0.50 cents to help you out!\n\nItem added to backpack.')
@@ -855,7 +870,20 @@ def runChocolateRoom():
         enter()
         return
 
-#Invent room function
+#helper functions for chocolate room------------------------------------------------
+
+#add to health
+def eat(health,food):
+    return (health + food)
+
+#check if flashlight can be used
+def useFlashlight(bag):
+    if 'Luminous Lollipop' in bag:
+        return True
+    else:
+        return False
+
+#Invent room function------------------------------------------------------------------------------------------------------------------------
 def runInventRoom():
     global bag
     displayTitle('Inventing Room')
@@ -1675,13 +1703,13 @@ def runTVRoom():
             if r == "1":
                 if not machine_wired and not run_machine:
                     machine_wired, run_machine = machine_explore(questions_done, machine_wired, oompa_called)
-                    
+
                 elif machine_wired and run_machine:
                     room_solved = machine_run(room_solved)
-                    
+
                     if room_solved:
                         return "success"
-                        
+
             #explore table
             elif r == "2":
                 if "wires" not in bag and not machine_wired:
@@ -1693,7 +1721,7 @@ def runTVRoom():
                     enter()
                     display("Do you want to take the <WIRES>?\n\ny = yes\nn = no\nq = quit")
                     r = get_r(["y","n","q"])
-                    
+
                     if r == "y":
                         bag.append("wires")
                         display("<WIRES> are added to your bag.")
@@ -1704,7 +1732,7 @@ def runTVRoom():
                         enter()
                         display("How do you want to respond? You don't think he saw you take the wires, but you are not sure.\n1 = yell back at him\n2 = apologize for taking wires\n3 = lie to him")
                         r = get_r(["1","2","3"])
-                        
+
                         if r == "1":
                             yell()
                         elif r == "2":
@@ -1712,13 +1740,13 @@ def runTVRoom():
                         elif r == "3":
                             lie()
                             return "fail"
-                            
+
                     elif r == "n":
                         display("Wires are left as they are.")
                         enter()
                         display("You leave the table.")
                         enter()
-                        
+
                     else:
                         display("You leave the table.")
                         enter()
@@ -1727,7 +1755,7 @@ def runTVRoom():
                     enter()
                     display("You leave the table.")
                     enter()
-                    
+
             #explore tv set
             elif r == "3":
                 display("You approach the old TV set in the corner of the room.")
@@ -1961,7 +1989,7 @@ def ask_questions(questions_done):
         elif r == "q":
             questions_done = True
             return questions_done
-    
+
 def yell():
     display("\"What do you think I'm doing?!\" you yell back defiantly. This was the last straw. Being stuck in this factory is messing with your mind.")
     enter()
@@ -2188,7 +2216,7 @@ def lie_to_wonka():
     bag.remove("Golden Ticket 1", "Golden Ticket 2", "Golden Ticket 3", "Golden Ticket 4", "Golden Ticket 5")
     display("\"Where did you get these?!\" he angrily asks, throwing the bag back at you. He holds onto the tickets. You open your mouth to talk again, but it seems that you never regained your ability to speak from before.")
     enter()
-        
+
 def wonka_admits():
     display("\"I- uh, f-found, um, them in-\"")
     enter()
@@ -2216,10 +2244,6 @@ def wonka_admits():
     enter()
     display("He walks away and the dragon draws closer. You need to act fast if you want to survive! Wonka isn't here to protect you now.")
     enter()
-        
-#functions for room:
-=======
->>>>>>> ea5dbd56eda9ebe3176ba2077fd5112bd3f3686f
 
 
 #helper functions to use in rooms---------------------------------------------------------------------------
