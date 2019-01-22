@@ -24,50 +24,69 @@ chocolateRoomSuccess = False
 startBtn = ''
 screenroom_img = ''
 
-#root.configure(background='black')
-
 class WonkaApp:
     def __init__(self, master):
         global masterRoot
         global startBtn
+        #initialize game streen
         masterRoot = master
         self.master = master
         pad=3
+        #make screen fullsized, allow it to be toggled to 200x200
         self._geom='200x200+0+0'
         master.geometry("{0}x{1}+0+0".format(master.winfo_screenwidth()-pad, master.winfo_screenheight()-pad))
         master.bind('<Escape>',self.toggle_geom)
+        #set background to black
         self.master.configure(background="black")
 
+        #create frame
         mainframe = tk.Frame(masterRoot,bg="black")
         mainframe.pack()
-        #mainframe.place(anchor = 'n',x=(master.winfo_screenwidth()-pad)/2,y=500)
+        #place title label on frame
         startLbl = Label(mainframe,bg="black",fg="white",text="Willy Wonka Game",font=("Courier",48))
         startLbl.pack()
 
+        #place start btn on frame
         var = tk.IntVar()
         startBtn = Button(mainframe, text = "START GAME", font = ('Courier',14),command =lambda: var.set(1))
         startBtn.pack()
 
+        #when start btn is clicked, destroy title and start btn
         startBtn.wait_variable(var)
         startBtn.destroy()
         startLbl.destroy()
+
+        #initialize game screen
         self.initializeGameRoom('finalroom.png',' ',mainframe)
+
         #run room functions:
         runCandyShopRoomIntro()
+        displayRoomImage('black.png')
         display('Oh no! Turns out Willy Wonka has trapped you inside his factory. You must succeed and get the golden ticket in each room to enter the final room.')
         enter()
         display('Maybe you\'ll see him in the final room....')
         enter()
-        runHomeScreen()
 
+        #run home screen:
+        gameOver = runHomeScreen()
+
+        #if game over, end game
+        if gameOver == 'end':
+            displayTitle('Game Over')
+            displayRoomImage('black.png')
+            display('Thanks for playing!')
+            enter()
+
+    #toggle function to change geometry when esc or window clicked
     def toggle_geom(self,event):
         geom=self.master.winfo_geometry()
         print(geom,self._geom)
         self.master.geometry(self._geom)
         self._geom=geom
 
-
+    #initialize game room function:
     def initializeGameRoom(self,img,displaytext,root):
+        #set global variables
         global output_text
         global canvas
         global enter_btn
@@ -83,70 +102,100 @@ class WonkaApp:
         screenwidth = 1900
         screenheight = 1120
         screenbg = 'black'
+
+        #initialize canvas on frame
         canvas = Canvas(root, bg = screenbg, width = screenwidth, height = screenheight)
         canvas.pack()
-        #root = Tk()
-        #root.geometry('800x800+0+0')
+
+        #create title text for canvas
         title_text = canvas.create_text((600,50), anchor = N, fill = 'white', font =('Courier',14),text='Room')
 
+        #open up image and create image on canvas
         imgpath = Image.open(os.path.dirname(os.path.abspath(__file__)) + '//' + img)
         resizedimg = imgpath.resize((500,500))
         screenroom_img = ImageTk.PhotoImage(resizedimg)
         room_img = canvas.create_image((600,100),image = screenroom_img,anchor = 'n')
         canvas.update()
 
+        #create output text on canvas
         output_text = canvas.create_text((600,660), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
+        #create error text on canvas for when input is wrong
         error_text = canvas.create_text((600,screenheight-275), anchor = N, fill = 'red', font =('Courier',12),text='')
+        #create line on canvas to separate backpack
         canvas.create_line(1200,0,1200,1800, fill="white")
 
+        #create entry box for user on canvas
         user_entry = Entry(canvas, relief = FLAT, bd = 10)
         user_entry.config(font=("Courier", 14))
         user_entry.pack()
         canvas.create_window(600-100,screenheight-200,window = user_entry, anchor = S)
 
+        #create enter btn for user on canvas
         enter_btn = Button(canvas, text = "ENTER", font = ('Courier',14),command = retFunc)
         enter_btn.configure(bd = 5)
         enter_btn.pack()
         canvas.create_window(600+100,screenheight-200,window = enter_btn, anchor = S)
+        #bind return key to same function as enter btn
         masterRoot.bind('<Return>',retFunc)
 
+        #create backpack frame
         backpack_frame = tk.Frame(masterRoot,width=500,height=750,bg="black")
         backpack_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
-        backpack_text = Label(backpack_frame,bg="black",fg="white",text="test",font=("Courier",12))
+
+        #set backpack label
+        backpack_text = Label(backpack_frame,bg="black",fg="white",text="",font=("Courier",12))
         backpack_text.pack()
         backpack_frame.place(anchor = N,x=1550, y=250)
 
-        #backpack_text = canvas.create_text((screenwidth/2,screenheight-300), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
+        #create open/close backpack btn
         backpack_btn = Button(canvas, text = "Open Backpack", font = ('Courier',12),command = displayBackpack)
         backpack_btn.configure(bd = 5)
         backpack_btn.pack()
         canvas.create_window(1550,200,window = backpack_btn, anchor = N)
         canvas.update()
+
+        #lift root to top of screen
         root.lift()
 
+#open backpack command
 def displayBackpack():
+    #use global variables
     global bag
     global backpack_btn
     global canvas
     global backpack_frame
     global backpack_text
     global masterRoot
+    #string to display in backpack
     displayBackpackString = 'Backpack:\n'
+
+    #add items to display string
     for item in bag:
         displayBackpackString += str(item) + '\n'
+    #display string on text label
     backpack_text.config(text = displayBackpackString)
     backpack_frame.lift()
+
+    #disable enter btn, return key
     enter_btn.configure(state="disabled")
     masterRoot.unbind('<Return>')
+
+    #change command to close backpack
     backpack_btn.configure(text = 'Close Backpack',command = closeBackpack)
     canvas.update()
 
+#close backpack command
 def closeBackpack():
+    #use global variables
     global backpack_btn
     global canvas
     global backpack_frame
     global masterRoot
+
+    #lower backpack frame
     backpack_frame.lower()
+
+    #change command and btn to display backpack
     backpack_btn.configure(text = 'Open Backpack',command = displayBackpack)
     enter_btn.configure(state="normal")
     masterRoot.bind('<Return>',retFunc)
@@ -154,9 +203,13 @@ def closeBackpack():
 
 #room functions:
 
+#home screen function
 def runHomeScreen():
     global candyShopSuccess
+    #display titles
+    displayTitle('Home Screen')
     displayRoomImage('lobby_without_finalroom.png')
+    #initialize variables
     gameRunning = True
     lives = 5
     chocolateRoomSuccess = False
@@ -164,9 +217,18 @@ def runHomeScreen():
     squirrelRoomSuccess = False
     tvRoomSuccess = False
     finalRoom = False
+
+    #while still alive
     while(gameRunning):
+        #display title and image
+        displayTitle('Home Screen')
+        displayRoomImage('lobby_without_finalroom.png')
+
+        #ask user for input
         display('What room do you want to enter?\n\n1 = Candy Shop\n2 = Chocolate Room\n3 = Inventing Room\n4 = Squirrel Room\n5 = TV Room')
         r = get_r('12345')
+
+        #if candy shop, run candy shop
         if r == '1':
             if candyShopSuccess == True:
                 display('You\'ve already completed this room. Try entering a different room.')
@@ -177,6 +239,8 @@ def runHomeScreen():
                     lives-=1
                     display('You lost a life. You have '+ str(lives) + ' remaining.')
                     enter()
+
+        #if chococlate room, run chocolate room
         elif r == '2':
             if chocolateRoomSuccess == True:
                 display('You\'ve already completed this room. Try entering a different room.')
@@ -189,6 +253,8 @@ def runHomeScreen():
                     enter()
                 elif roomSuccess == 'success':
                     chocolateRoomSuccess = True
+
+        #if invent shop, run invent shop
         elif r == '3':
             if inventRoomSuccess == True:
                 display('You\'ve already completed this room. Try entering a different room.')
@@ -201,6 +267,8 @@ def runHomeScreen():
                     enter()
                 elif roomSuccess == 'success':
                     inventRoomSuccess = True
+
+        #if squirrel room, run squirrel room
         elif r == '4':
             if squirrelRoomSuccess == True:
                 display('You\'ve already completed this room. Try entering a different room.')
@@ -213,6 +281,8 @@ def runHomeScreen():
                     enter()
                 elif roomSuccess == 'success':
                     squirrelRoomSuccess = True
+
+        #if tv room, run tv room
         elif r == '5':
             if tvRoomSuccess == True:
                 display('You\'ve already completed this room. Try entering a different room.')
@@ -225,6 +295,8 @@ def runHomeScreen():
                     enter()
                 elif roomSuccess == 'success':
                     tvRoomSuccess = True
+
+        #if all golden tickets are collected, set finalRoom = true
         if ('Golden Ticket 1' in bag) and ('Golden Ticket 2' in bag) and ('Golden Ticket 3' in bag) and ('Golden Ticket 4' in bag) and ('Golden Ticket 5' in bag):
             gameRunning = False
             finalRoom = True
@@ -236,14 +308,22 @@ def runHomeScreen():
             enter()
             return 'end'
 
+    #if finalRoom is true (all golden tickets collected)
     if(finalRoom == True):
             display('Congratulations! You can now enter the final room.')
             enter()
+            displayTitle('Home Screen')
             displayRoomImage('lobby_with_finalroom.png')
             gameRunning = False
             while(gameRunning):
+                #display final room image
+                displayTitle('Home Screen')
+                displayRoomImage('lobby_with_finalroom.png')
+
+                #ask for room, including final room
                 display('What room do you want to enter?\n\n1 = Candy Shop\n2 = Chocolate Room\n3 = Inventing Room\n4 = Squirrel Room\n5 = TV Room\n6 = Final Room')
                 r = get_r('123456')
+                #if candy shop, run candy shop
                 if r == '1':
                     if candyShopSuccess == True:
                         display('You\'ve already completed this room. Try entering a different room.')
@@ -254,6 +334,8 @@ def runHomeScreen():
                             lives-=1
                             display('You lost a life. You have '+ str(lives) + ' remaining.')
                             enter()
+
+                #if chococlate room, run chocolate room
                 elif r == '2':
                     if chocolateRoomSuccess == True:
                         display('You\'ve already completed this room. Try entering a different room.')
@@ -266,6 +348,8 @@ def runHomeScreen():
                             enter()
                         elif roomSuccess == 'success':
                             chocolateRoomSuccess = True
+
+                #if invent shop, run invent shop
                 elif r == '3':
                     if inventRoomSuccess == True:
                         display('You\'ve already completed this room. Try entering a different room.')
@@ -278,6 +362,8 @@ def runHomeScreen():
                             enter()
                         elif roomSuccess == 'success':
                             inventRoomSuccess = True
+
+                #if squirrel room, run squirrel room
                 elif r == '4':
                     if squirrelRoomSuccess == True:
                         display('You\'ve already completed this room. Try entering a different room.')
@@ -290,6 +376,8 @@ def runHomeScreen():
                             enter()
                         elif roomSuccess == 'success':
                             squirrelRoomSuccess = True
+
+                #if tv room, run tv room
                 elif r == '5':
                     if tvRoomSuccess == True:
                         display('You\'ve already completed this room. Try entering a different room.')
@@ -302,12 +390,15 @@ def runHomeScreen():
                             enter()
                         elif roomSuccess == 'success':
                             tvRoomSuccess = True
+
+                #if final room, run final room
                 elif r == '6':
                     result = runFinalRoom()
                     if result == 'fail':
                         lives-=1
                         display('You lost a life. You have '+ str(lives) + ' remaining.')
                         enter()
+                    #if final room is success, end game
                     elif result == 'success':
                         return 'end'
                 #check if player lost all 5 lives, then exit game
@@ -317,12 +408,15 @@ def runHomeScreen():
                     enter()
                     return 'end'
 
-
+#run first Candy shop for gamers
 def runCandyShopRoomIntro():
     global money
     global candyShopSuccess
+    #display title and image
     displayTitle('Candy Shop')
     displayRoomImage('candyshop.png')
+
+    #introduce gamers to the game
     display('Hello Charlie! \n\n1 = \'Hello!\' \n\nType \'1\' below and click \'ENTER\' to proceed.')
     get_r('1')
     display('The eccentric chocolatier Willy Wonka, who retired last year, just announced that there would be one final mission in his chocolate factory. \n\nClick \'ENTER\' to proceed.')
@@ -333,6 +427,7 @@ def runCandyShopRoomIntro():
     get_r('1')
     display('Rumor has it the last golden ticket is at the candy store on your street... Would you like to visit? \n\ny = yes \nn = no')
     r = get_r('yn')
+    #either way, Charlie goes to the candy store
     if r == 'n':
         display('Aw, man. Your Grandpa Joe has been wanting to visit the candy store for a while, so he forces you to go to the candy shop with him.')
         enter()
@@ -341,30 +436,39 @@ def runCandyShopRoomIntro():
         enter()
     display('Along the way, you find 50 cents in the snow. Do you want to pick it up?\n\ny = yes \nn = no')
     r = get_r('yn')
+
+    #if money picked up, add to backpack
     if r == 'y':
         money += .50
         display('You have gained 50 cents! Maybe you can get some more later. \n\nOpen your backpack to see your new money.')
         bag[0]=('%.2f'%money)
         enter()
+    #otherwise, continue
     else:
         display('You have no money now. But at least you\'ve got a good conscience. Maybe Grandpa Joe can help you out later.')
         enter()
     display('You\'ve reached the candy shop!')
     enter()
-    #NOTE: Change candy in the following line to items that we can actually use later on
     display('Candy Register Guy: "Hi, Charlie! Nice to see you again. I see you\'re with your Grandpa Joe..."')
     enter()
     room_unsolved = True
+    #while room is unsolved, repeat
     while(room_unsolved):
         display('"What would you like today, Charlie?" \n\n1 = "I\'ll have some candy."\n2 = "Can you turn on the TV?"\n3 = "I don\'t know."')
-        r = get_r('123')
+        r = get_r(['1','2','3'])
+
+        #if 1, present candy options to buy and put into backpack
         if r == '1':
             display(('Candy Register Guy: "What candy would you like?"\n\nYour balance: %.2f cents.\n\n1 = Laffy Taffy \t$0.10\n2 = Giant SweeTarts \t$0.10\n3 = Luminous Lollipop \t$0.15\n4 = Gobstoppers \t$0.25\nq = quit')%money)
             r = get_r('12345q')
+
+            #buy laffy taffy
             if r == '1':
                 if money < 0.10:
                     display('You don\'t have enough money to buy the Laffy Taffy. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
                     r = get_r('12')
+
+                    #steal candy -> die
                     if r == '1':
                         display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
                         enter()
@@ -373,7 +477,7 @@ def runCandyShopRoomIntro():
                         display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
                         enter()
                 else:
-                    display('You bought the candy! It is put into your backpack.') #item in backpack
+                    display('You bought the candy! It is put into your backpack.')
                     money -= 0.10
                     bag.append('Laffy Taffy')
                     if money > 0:
@@ -381,10 +485,13 @@ def runCandyShopRoomIntro():
                     else:
                         bag[0] = '0.00'
                     enter()
+
+            #buy giant sweetarts
             elif r == '2':
                 if money < 0.10:
                     display('You don\'t have enough money to buy the SweeTarts. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
                     r = get_r('12')
+                    #steal candy -> die
                     if r == '1':
                         display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
                         enter()
@@ -401,6 +508,8 @@ def runCandyShopRoomIntro():
                     else:
                         bag[0] = '0.00'
                     enter()
+
+            #get luminous lollipop
             elif r == '3':
                 if money < 0.15:
                     display('You don\'t have enough money to buy the Lollipop. Candy Register Guy, being the kind man he is, offers it to you for free! Would you like to accept it? \n\ny = yes\nn = no')
@@ -421,13 +530,17 @@ def runCandyShopRoomIntro():
                         bag[0] = '0.00'
                     enter()
                     candyShopSuccess = True
+
+            #buy gobstoppers
             elif r == '4':
                 if money < 0.25:
-                    display('You don\'t have enough money to buy the SweeTarts. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
+                    display('You don\'t have enough money to buy the Gobstoppers. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
                     r = get_r('12')
+                    #steal candy -> die
                     if r == '1':
                         display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
                         enter()
+                        return 'fail'
                     elif r == '2':
                         display('You ask Grandpa Joe for money, but he gets mad at you. He does not give you the money. How do you have the nerve to use money for some useless candy?') #restart
                         enter()
@@ -440,6 +553,8 @@ def runCandyShopRoomIntro():
                     else:
                         bag[0] = '0.00'
                     enter()
+
+        #turn on tv
         elif r == '2':
             display('"Of course, Charlie! Here, I\'ll switch it on for you..."')
             enter()
@@ -448,18 +563,21 @@ def runCandyShopRoomIntro():
             display('"That reminds me, I have one last Wonka Chocolate Bar." \nGrandpa Joe: "I remember Wonka! That man was a character." \n\n1 - Ask Grandpa Joe more about Wonka\n2 - Ask to see the chocolate bar')
             r = get_r('12')
             grandpasymp = False
+            #ask grandpa joe about past for sympathy later on
             if r == '1':
                 display('Grandpa Joe: "Oh, Charlie those were the most wonderful times. Wonka was such a polite soul with peculiar ideas for his chocolate factory. I enjoyed working there very much."')
                 enter()
                 display('Grandpa Joe seems to be getting pretty nostalgic...')
                 enter()
                 grandpasymp = True
+
             display('Candy Register Guy: "So, would you like the last Wonka Bar? Maybe you\'ll get the last golden ticket! It\'s only $0.60."\n\ny = yes\nn = no')
             r = get_r('yn')
             if r == 'y':
                 display(('"Hmm... but you only have %.2f cents." \n\n1 - Ask Grandpa Joe to borrow money\n2 - Take the chocolate bar and run\n3 - Don\'t buy the chocolate bar') % money)
                 r = get_r('123')
                 if r == '1':
+                    #if grandpa is symp, give golden ticket
                     if grandpasymp == True:
                         display('Grandpa Joe: "Of course, Charlie! For old times sakes. Here, I\'ll pay for it."\n\nGrandpa Joe hands you the chocolate bar.')
                         enter()
@@ -468,16 +586,20 @@ def runCandyShopRoomIntro():
                         room_unsolved = False
                         enter()
                         return 'success'
+                    #if grandpa joe is not symp, you die
                     else:
                         display('You ask Grandpa Joe for money, but he gets mad at you. There is no way he could spend that much money on a chocolate bar. You died. Return to start page.') #restart
                         enter()
                         return 'fail'
+
+                #steal chocolate bar -> die
                 elif r == '2':
                     display('You take it and run as fast as you can out the candy store door. Candy Register Guy calls the police and has you arrested.')
                     enter()
                     display('You died. Return to start page.') #restart
                     enter()
                     return 'fail'
+
                 elif r == '3':
                     display('Candy Register Guy: "Alright, Charlie. Just know kids around the world want this chococlate bar!"') #return to asking
                     enter()
@@ -492,18 +614,25 @@ def runCandyShopRoom():
     global money
     global candyShopSuccess
     room_unsolved = True
+
+    #display title and image
     displayTitle('Candy Shop Room')
     displayRoomImage('candyshop.png')
+
+    #while room is unsolved
     while(room_unsolved):
         display('"What would you like today, Charlie?" \n\n1 = "I\'ll have some candy."\n2 = "Can you turn on the TV?"\n3 = "I don\'t know."\nq = return to home screen')
         r = get_r('123q')
         if r == '1':
             display(('Candy Register Guy: "What candy would you like?"\n\nYour balance: %.2f cents.\n\n1 = Laffy Taffy \t$0.10\n2 = Giant SweeTarts \t$0.10\n3 = Luminous Lollipop \t$0.15\n4 = Gobstoppers \t$0.25\nq = return to home screen')%money)
             r = get_r('12345q')
+
+            #buy laffy taffy
             if r == '1':
                 if money < 0.10:
                     display('You don\'t have enough money to buy the Laffy Taffy. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
                     r = get_r('12')
+                    #steal candy -> die
                     if r == '1':
                         display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
                         enter()
@@ -520,10 +649,14 @@ def runCandyShopRoom():
                     else:
                         bag[0] = '0.00'
                     enter()
+
+            #buy sweetarts
             elif r == '2':
                 if money < 0.10:
                     display('You don\'t have enough money to buy the SweeTarts. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
                     r = get_r('12')
+
+                    #steal candy -> die
                     if r == '1':
                         display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
                         enter()
@@ -540,16 +673,26 @@ def runCandyShopRoom():
                     else:
                         bag[0] = '0.00'
                     enter()
+
+            #get luminous lollipop
             elif r == '3':
                 if money < 0.15:
                     display('You don\'t have enough money to buy the Lollipop. Candy Register Guy, being the kind man he is, offers it to you for free! Would you like to accept it? \n\ny = yes\nn = no')
                     r = get_r('yn')
+
+                    #if lollipop taken, win room
                     if r == 'y':
-                        display('Wow! Turns out it isn\'t just a normal lollipop. It lights up! It is put into your backpack. \n\nWho knows, it might be useful in the future....')
+                        display('Wow! Turns out it isn\'t just a normal lollipop. It\'s a Luminous Lollipop! It is put into your backpack. \n\nWho knows, it might be useful in the future....')
+                        bag.append('Luminous Lollipop')
                         enter()
+                        candyShopSuccess = True
+                        room_unsolved = False
+                        return 'success'
                     elif r == 'n':
                         display('Candy Register Guy: "Alright, Charlie. But you\'re missing out."')
                         enter()
+
+                #if lollipop bought, win room
                 else:
                     display('You bought the candy! \nWow! Turns out it isn\'t just a normal lollipop. It\'s a Luminous Lollipop! It is put into your backpack. \n\nWho knows, it might be useful in the future....')
                     money -= 0.15
@@ -561,10 +704,15 @@ def runCandyShopRoom():
                     enter()
                     candyShopSuccess = True
                     room_unsolved = False
+                    return 'success'
+
+            #buy gobstoppers
             elif r == '4':
                 if money < 0.25:
-                    display('You don\'t have enough money to buy the SweeTarts. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
+                    display('You don\'t have enough money to buy the Gobstoppers. What do you want to do? \n\n1 = Steal it\n2 = Ask Grandpa Joe for money')
                     r = get_r('12')
+
+                    #steal candy -> fail
                     if r == '1':
                         display('You try to steal the candy bar... but you get caught! Oh no! You died. Return to start page.') #restart
                         enter()
@@ -582,14 +730,20 @@ def runCandyShopRoom():
                     enter()
             elif r == 'q':
                 return
+
+        #turn on tv
         elif r == '2':
             display('"Of course, Charlie! Here, I\'ll switch it on for you..."')
             enter()
             display('"Oh look! It\'s Jeopardy, my favorite show!"')
             enter()
+
+        #ask user again
         elif r == '3':
             display('Candy Register Guy: "I can\'t help you there, old sport. I\'ll be here whenever you\'re ready."')
             enter()
+
+        #return to home screen
         elif r == 'q':
             return
 
@@ -704,26 +858,26 @@ def runInventRoom():
     displayTitle('Inventing Room')
     displayRoomImage('inventroom.png')
     cabinet_contents = ["secret formula", "deflation gumdrops"]
-    
+
     candy_recipe_folder = ["fruity tooty lollipop recipe","groovy grape taffy recipe","twisty tangy twizzlers recipe"]
     chocolate_recipe_folder = ["golden ticket"]
     antidote_recipe_folder = ["blueberry antidote recipe piece 1"]
-    
+
     cauldron = []
     cauldron_attempts_left = 2
     antidote_ingredients_list = ["blueberry extract", "deflation gumdrops", "fruity tooty lollipop", "purple taffy", "secret formula"]
     lollipop_recipe_list = ["strawberry","huckleberry","orange syrup"]
-    
+
     available_taffy = ["red taffy","yellow taffy", "blue taffy"]
-    
+
     available_syrup = ["apple syrup", "orange syrup", "banana syrup"]
-    
+
     extract_cabinet = ["raspberry extract", "strawberry extract", "blueberry extract"]
     berries_cabinet = ["huckleberry", "cranberry", "strawberry", "stRaNGe bERrY"]
-    
+
     room_solved = False
     char_is_dead = False
-    
+
     display("Welcome to the Inventing Room! You are standing in the very place where some of Wonka's world-reknown, best-selling candy concoctions came to life!")
     enter()
     display("You stumbled upon a leftover piece of Three Course Dinner Chewing Gum from Violet Beauregarde's unfortunate mishap.")
@@ -734,21 +888,21 @@ def runInventRoom():
     enter()
     display("Luckily, the Inventing Room is stocked with candy syrups, berries, and other ingredients. Have a look around and perhaps you'll find what you need to whip up an antidote! Good luck!")
     enter()
-    
-    
+
+
     while (not room_solved):
-        
+
         display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view a recipe\n4 = remove an item\n5 = give up")
         r = get_r(["1","2","3","4"])
-        
+
         #explore room
-        
+
         if r == "1":
             explore_room = True
             while(explore_room):
                 display("Where would you like to go?\n\n1 = closet\n2 = recipe cabinet\n3 = cauldron\n4 = candy making station\n5 = candy tasting table\n6 = syrup table\n7 = stock pantry\nq = quit")
                 r = get_r(["1","2","3","4","5","6","7","q"])
-                
+
                 #closet -----------------------------------------------------------
                 if r == "1":
                     if "key" not in bag:
@@ -785,15 +939,15 @@ def runInventRoom():
                                     cabinet_contents.remove("deflation gumdrops")
                                     display("You have added <DEFLATION GUMDROPS> to your bag.")
                                     enter()
-                                    
+
                 #recipe cabinet ---------------------------------------------------
                 elif r == "2":
                     explore_cabinet = True
                     while(explore_cabinet):
-                        
+
                         display("This is the recipe cabinet. Add a recipe to your bag to view it. Which folder would you like to look in?\n\n1 = candy\n2 = chocolates\n3 = antidotes\nq = quit")
                         r = get_r(["1","2","3","q"])
-                        
+
                         #candy recipe folder
                         if r == "1":
                             if len(candy_recipe_folder) == 0:
@@ -823,8 +977,8 @@ def runInventRoom():
                                     candy_recipe_folder.remove("twisty tangy twizzlers recipe")
                                     display("You have added <TWISTY TANGY TWIZZLERS RECIPE> to your bag.")
                                     enter()
-                            
-                        
+
+
                         #chocolate recipe folder
                         elif r == "2":
                             if len(chocolate_recipe_folder) == 0:
@@ -834,8 +988,8 @@ def runInventRoom():
                                 bag.append("Golden Ticket 3")
                                 display("You have found a <GOLDEN TICKET>! You have added the <GOLDEN TICKET> to your bag.")
                                 enter()
-                            
-                        
+
+
                         #antidote recipe folder
                         elif r == "3":
                             if len(antidote_recipe_folder) == 0:
@@ -849,18 +1003,18 @@ def runInventRoom():
                                     antidote_recipe_folder.remove("blueberry antidote recipe piece 1")
                                     display("You have added <BLUEBERRY ANTIDOTE RECIPE> to your bag. It appears that a piece of the paper has been ripped off...")
                                     enter()
-    
+
                         #exit cabinet
                         elif r == "q":
                             explore_cabinet = False
-                
+
                 #cauldron ---------------------------------------------------------
                 elif r == "3":
                     explore_cauldron = True
                     while(explore_cauldron):
                         display("What would you like to do?\n\n1 = add ingredient\n2 = view ingredients in cauldron\n3 = empty cauldron\n4 = start cooking\nq = quit")
                         r = get_r(["1","2","3","4","q"])
-                        
+
                         if r == "1":
                             if len(bag) > 0:
                                 display("Enter ingredient you would like to add. The ingredient must be in your bag or you will not be able to add it.")
@@ -896,16 +1050,16 @@ def runInventRoom():
                                 enter()
                         if r == "4":
                             can_cook = True
-                            
+
                             #check length
                             if len(cauldron) != 5:
                                 can_cook = False
-                            
+
                             #check ingredients
                             for ingredient in cauldron:
                                 if ingredient not in antidote_ingredients_list:
                                     can_cook = False
-                            
+
                             display("Are you sure you would like to cook the ingredients in the cauldron?\ny = yes\nn = no")
                             r = get_r(["y","n"])
                             if r == "y":
@@ -938,24 +1092,24 @@ def runInventRoom():
                                         return "fail"
                         if r == "q":
                             explore_cauldron = False
-                
+
                 #candy making station ---------------------------------------------
                 elif r == "4":
                     explore_station = True
                     while(explore_station):
                         display("What candy would you like to make?\n\n1 = deflation gumdrops\n2 = fruity tooty lollipop\n3 = colored taffy\nq = quit")
                         r = get_r(["1","2","3","q"])
-                        
+
                         if r == "1":
                             display("This machine can no longer make deflation gumdrops! Maybe there are some lying around...")
                             enter()
                         elif r == "2":
                             can_cook = True
-                            
+
                             for ingredient in lollipop_recipe_list:
                                 if ingredient not in bag:
                                     can_cook = False
-                            
+
                             if can_cook:
                                 print bag
                                 bag.remove("strawberry")
@@ -978,7 +1132,7 @@ def runInventRoom():
                         elif r == "3":
                             display("What color taffy would you like to make?\n\n1 = orange taffy\n2 = green taffy\n3 = purple taffy")
                             r = get_r(["1","2","3"])
-                            
+
                             if r == "1":
                                 display("This machine can no longer make orange taffy!")
                                 enter()
@@ -1004,14 +1158,14 @@ def runInventRoom():
                                     enter()
                         elif r == "q":
                             explore_station = False
-                
+
                 #candy testing table ----------------------------------------------
                 elif r == "5":
                     explore_candy_tasting_table = True
                     while(explore_candy_tasting_table):
                         display("What candy would you like to look at?\n\n1 = jolly ranchers\n2 = taffy\n3 = gumdrops\nq = quit")
                         r = get_r(["1","2","3","q"])
-                        
+
                         #jolly ranchers
                         if r == "1":
                             display("Looks like someone ate all the jolly ranchers already. Oops.")
@@ -1024,10 +1178,10 @@ def runInventRoom():
                                 available_taffy_string = ""
                                 for taffy in available_taffy:
                                     available_taffy_string += taffy + "\n"
-                                    
+
                                 display("The following taffy is on the table. Which would you like to look at?\n\n" + available_taffy_string)
                                 r = get_r(available_taffy)
-                                
+
                                 if r == "red taffy":
                                     display("Would you like to add the <RED TAFFY> to your bag?\n\ny = yes\nn = no")
                                     r = get_r(["y","n"])
@@ -1052,22 +1206,22 @@ def runInventRoom():
                                         available_taffy.remove("blue taffy")
                                         display("You have added <BLUE TAFFY> to your bag.")
                                         enter()
-                                        
+
                         elif r == "3":
                             display("These gumdrops have been sitting here for a few months. You probably don't wanna touch 'em.")
                             enter()
                         elif r == "q":
                             explore_candy_tasting_table = False
-                
+
                 #syrup table ------------------------------------------------------
                 elif r == "6":
                     available_syrup_string = ""
                     for syrup in available_syrup:
                         available_syrup_string += syrup + "\n"
-                        
+
                     display("The following syrup is on the table. Which would you like to look at?\n\n" + available_syrup_string)
                     r = get_r(available_syrup)
-                    
+
                     if r == "apple syrup":
                         display("This syrup is way too sticky to touch.")
                         enter()
@@ -1082,15 +1236,15 @@ def runInventRoom():
                     elif r == "banana syrup":
                         display("Looks like the Oompa Loompas need to restock the banana syrup.")
                         enter()
-                        
-                
+
+
                 #stock pantry -----------------------------------------------------
                 elif r == "7":
                     explore_pantry = True
                     while(explore_pantry):
                         display("Which cabinet would you like to look in?\n\n1 = extracts\n2 = berries\nq = quit")
                         r = get_r(["1","2","q"])
-                        
+
                         #extract cabinet
                         if r == "1":
                             if len(extract_cabinet) == 0:
@@ -1100,10 +1254,10 @@ def runInventRoom():
                                 extracts_in_cabinet = ""
                                 for extract in extract_cabinet:
                                     extracts_in_cabinet += extract + "\n"
-                                    
+
                                 display("The following extracts are in the cabinet. Which would you like to look at?\n\n" + extracts_in_cabinet)
                                 r = get_r(extract_cabinet)
-    
+
                                 if r == "raspberry extract":
                                     display("Would you like to add the <RASPBERRY EXTRACT> to your bag?\n\ny = yes\nn = no")
                                     r = get_r(["y","n"])
@@ -1133,7 +1287,7 @@ def runInventRoom():
                                         bag.append("blueberry antidote recipe piece 2")
                                         display("You have added <BLUEBERRY ANTIDOTE RECIPE PIECE 2> to your bag.")
                                         enter()
-                            
+
                         #berries cabinet
                         elif r == "2":
                             if len(berries_cabinet) == 0:
@@ -1143,10 +1297,10 @@ def runInventRoom():
                                 berries_in_cabinet = ""
                                 for berry in berries_cabinet:
                                     berries_in_cabinet += berry + "\n"
-                                
+
                                 display("The following berries are in the cabinet. Which would you like to look at?\n\n" + berries_in_cabinet)
                                 r = get_r(berries_cabinet)
-                                
+
                                 if r == "huckleberry":
                                     display("Would you like to add the <HUCKLEBERRY> to your bag?\n\ny = yes\nn = no")
                                     r = get_r(["y","n"])
@@ -1188,17 +1342,17 @@ def runInventRoom():
                                         explore_room = False
                         elif r == "q":
                             explore_pantry = False
-                            
+
                 elif r == "q":
                     explore_room = False
-                
+
         #view location descriptions
         elif r == "2":
             view_loc_desc = True
             while(view_loc_desc):
                 display("What would you like to know more about?\n1 = closet\n2 = recipe cabinet\n3 = cauldron\n4 = candy making station\n5 = candy tasting table\n6 = syrup table\n7 = stock pantry\nq = quit")
                 r = get_r(["1","2","3","4","5","6","7","q"])
-                
+
                 if r == "1":
                     display("Cabinet\nHolds some secret stuff. Wonka usually keeps it locked for some reason...")
                     enter()
@@ -1217,7 +1371,7 @@ def runInventRoom():
                     display("Stock Pantry\nWhere you can find ingredients like berries and extracts.")
                 elif r == "q":
                     view_loc_desc = False
-        
+
         #view recipes
         elif r == "3":
             recipes_list = get_recipes_from_bag()
@@ -1250,7 +1404,7 @@ def runInventRoom():
                     elif r == "blueberry antidote recipe piece 3":
                         display("5) fruity tooty lollipop\n\nCombine these ingredients in a cauldron, and your antidote is complete!")
                         enter()
-        
+
         elif r == "4":
             removable_items = get_removable_items()
             if len(bag) == 0:
@@ -1268,7 +1422,7 @@ def runInventRoom():
                         bag.remove(r)
                         display("You have removed <" + r.upper() + "> from your bag.")
                         enter()
-        
+
         elif r == "5":
             display("Your progress will not be saved. Would you like to continue?\ny = yes\nn = no")
             r = get_r(["y","n"])
@@ -1404,6 +1558,7 @@ def runSquirrelRoom():
             enter()
             display('You will return to home.')
             enter()
+            return 'success'
     elif r == 'n':
         display('You have left the room.')
         return
@@ -2013,14 +2168,18 @@ def runFinalRoom():
         display("Congratulations! You have won!")
         enter()
         return "success"
-#functions for room:
 
+
+#helper functions to use in rooms---------------------------------------------------------------------------
+
+#display room title on top label
 def displayTitle(roomname):
     global title_text
     global canvas
     canvas.itemconfig(title_text,text=roomname)
     canvas.update()
 
+#display room image on center image
 def displayRoomImage(img):
     global room_img
     global canvas
@@ -2031,7 +2190,8 @@ def displayRoomImage(img):
     canvas.itemconfig(room_img,image=screenroom_img)
     canvas.update()
 
-def enter():             #use to wait for Enter btn, no text input
+#wait for user to press enter btn/return before continuing, no text input
+def enter():
     global user_entry
     global canvas
     global enter_btn
@@ -2039,9 +2199,10 @@ def enter():             #use to wait for Enter btn, no text input
     #enter_btn.focus_set()
     waitUntilButtonClicked()
 
+#when user presses enter btn/return, take in input from entry, return user input
 def get_r(accepted_r):
     user_r = inputEnter().lower()
-    #enter_btn.focus_set()
+    #if input not valid, display error message
     while (user_r == '' or (user_r not in accepted_r)):
         canvas.itemconfig(error_text,text='Please enter valid input')
         canvas.update()
@@ -2066,8 +2227,9 @@ def display(displaytext):
     canvas.itemconfig(output_text,text=displaytext)
     canvas.update()
 
-#helper functions:
+#helper functions for display---------------------------------------------------------------------------
 
+#read entry function, return user input
 def readEntry():
     global user_entry
     user_entered = user_entry.get()
@@ -2075,6 +2237,7 @@ def readEntry():
     canvas.update()
     return user_entered
 
+#wait until enter btn clicked using waitvar
 def waitUntilButtonClicked():
     global enter_btn
     global canvas
@@ -2082,18 +2245,14 @@ def waitUntilButtonClicked():
     global root
     entVar = tk.IntVar()
     enter_btn.wait_variable(entVar)
-    print 'button clicked'
 
-def startGame():
-    global startBtn
-    startVar = tk.IntVar()
-    startBtn.wait_variable(startVar)
-    print 'start game'
-
+#if enter btn/return key pressed, change entVar to 1
 def retFunc(event=None):
     global canvas
     global entVar
     entVar.set(1)
+
+#main function to run program---------------------------------------------------------------
 
 def main():
     global root
