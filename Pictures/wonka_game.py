@@ -1593,7 +1593,7 @@ def runSquirrelRoom():
                 display(poleString + 'Which number nut would you like to move?')
                 nutnum = get_r(isFirstPole(pole1,pole2,pole3))
                 display(poleString + 'Which pole would you like to move it to?')
-                polenum = get_r(isPoleOk(nutnum, pole1,pole2,pole3))
+                polenum = get_r(canPlaceOnPole(nutnum, pole1,pole2,pole3))
                 oldpole = findOldPole(nutnum,pole1,pole2,pole3)
                 if polenum == '1':
                     editPoles(nutnum,oldpole,pole1)
@@ -1642,7 +1642,7 @@ def firstNumIndex(pole):
     return ' '
 
 #determine if nut can be placed on pole
-def isPoleOk(num,pole1, pole2, pole3):
+def canPlaceOnPole(num,pole1, pole2, pole3):
     editable = ''
     poleArray = [' ',pole1, pole2, pole3]
     for i in range(1,4):
