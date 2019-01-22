@@ -4,6 +4,7 @@ from PIL import ImageTk,Image
 import os
 import random
 
+#global variables
 output_text = ''
 canvas = ''
 enter_btn = ''
@@ -24,6 +25,7 @@ chocolateRoomSuccess = False
 startBtn = ''
 screenroom_img = ''
 
+#start wonka game
 class WonkaApp:
     def __init__(self, master):
         global masterRoot
