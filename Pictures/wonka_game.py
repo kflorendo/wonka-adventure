@@ -416,7 +416,7 @@ def runCandyShopRoomIntro():
     global candyShopSuccess
     #display title and image
     displayTitle('Candy Shop')
-    displayRoomImage('candyshop.png')
+    displayRoomImage('black.png')
 
     #introduce gamers to the game
     display('Hello Charlie! \n\n1 = \'Hello!\' \n\nType \'1\' below and click \'ENTER\' to proceed.')
@@ -451,6 +451,7 @@ def runCandyShopRoomIntro():
         enter()
     display('You\'ve reached the candy shop!')
     enter()
+    displayRoomImage('candyshop.png')
     display('Candy Register Guy: "Hi, Charlie! Nice to see you again. I see you\'re with your Grandpa Joe..."')
     enter()
     room_unsolved = True
