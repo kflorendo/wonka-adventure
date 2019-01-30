@@ -120,9 +120,9 @@ class WonkaApp:
         canvas.update()
 
         #create output text on canvas
-        output_text = canvas.create_text((600,660), anchor = N, fill = 'white', font =('Courier',14),text=displaytext, width = 500)
+        output_text = canvas.create_text((600,650), anchor = N, fill = 'white', font =('Courier',12),text=displaytext, width = 520)
         #create error text on canvas for when input is wrong
-        error_text = canvas.create_text((600,screenheight-275), anchor = N, fill = 'red', font =('Courier',12),text='')
+        error_text = canvas.create_text((600,screenheight-205), anchor = N, fill = 'red', font =('Courier',12),text='')
         #create line on canvas to separate backpack
         canvas.create_line(1200,0,1200,1800, fill="white")
 
@@ -130,13 +130,13 @@ class WonkaApp:
         user_entry = Entry(canvas, relief = FLAT, bd = 10)
         user_entry.config(font=("Courier", 14))
         user_entry.pack()
-        canvas.create_window(600-100,screenheight-200,window = user_entry, anchor = S)
+        canvas.create_window(600-100,screenheight-130,window = user_entry, anchor = S)
 
         #create enter btn for user on canvas
         enter_btn = Button(canvas, text = "ENTER", font = ('Courier',14),command = retFunc)
         enter_btn.configure(bd = 5)
         enter_btn.pack()
-        canvas.create_window(600+100,screenheight-200,window = enter_btn, anchor = S)
+        canvas.create_window(600+100,screenheight-130,window = enter_btn, anchor = S)
         #bind return key to same function as enter btn
         masterRoot.bind('<Return>',retFunc)
 
@@ -926,7 +926,7 @@ def runInventRoom():
     while (not room_solved):
 
         display("What would you like to do?\n\n1 = explore room\n2 = view location descriptions\n3 = view a recipe\n4 = remove an item\n5 = give up")
-        r = get_r(["1","2","3","4"])
+        r = get_r(["1","2","3","4","5"])
 
         #explore room
 
@@ -1964,7 +1964,7 @@ def machine_run(room_solved):
         enter()
         display("Eventually, everything calms down. The smell of fried metal fills the air. You look down at the TV, and sure enough, it is split in half. A thin trail of smoke sneaks up from it.")
         enter()
-        display("You look around the rubble, trying to find something, but to no avail. Disappointed, you turn away. Where is that last golden ticket?")
+        display("You look around the rubble, trying to find something, but to no avail. Disappointed, you turn away. Where is that golden ticket?")
         enter()
         display("Suddenly, a glint of something shiny catches your eye from behind the broken TV screen. Could it be...?")
         enter()
@@ -2073,7 +2073,7 @@ def apologize():
     enter()
     display("\"Alright look, kid,\" he sighs. \"I didn't even see you take the wires, but I'm technically supposed to report you to the boss for stealing.\"")
     enter()
-    display("You look at him with fear in my eyes. You'll never be able to find the last golden ticket if you're arrested.")
+    display("You look at him with fear in my eyes. You'll never be able to find the golden ticket if you're arrested.")
     enter()
     display("\"But,\" he continues, \"since you made me laugh, I'll let you slide this time.\"")
     enter()
